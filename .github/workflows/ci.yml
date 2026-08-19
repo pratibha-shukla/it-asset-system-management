@@ -46,7 +46,9 @@ jobs:
         run: npm install --legacy-peer-deps 
       - name: Run tests
         working-directory: frontend
-        run: npm test -- --watchAll=false --passWithNoTests
+    run: npm test
+        env:
+          CI: true
       - name: Build
         working-directory: frontend
         run: npm run build
