@@ -1,0 +1,49 @@
+/* ChatWidget */
+
+/* Floating launcher button */
+.chat-launcher {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9998;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Modal title badge */
+.chat-badge { font-size: 0.7rem; font-weight: normal; }
+
+/* Suggestion pill buttons */
+.chat-suggestion { font-size: 0.78rem; }
+
+/* Message scroll container */
+.chat-messages {
+  max-height: 320px;
+  min-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Message bubbles */
+.chat-msg {
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  font-size: 14px;
+}
+.chat-msg--user  { align-self: flex-end;   background: #0d6efd; color: #fff;     }
+.chat-msg--bot   { align-self: flex-start; background: #f1f3f5; color: #212529;  }
+.chat-msg--error { align-self: flex-start; background: #f8d7da; color: #842029;  }
+.chat-msg--pending { align-self: flex-start; }

@@ -1,0 +1,54 @@
+/* AssetLifecycle — Finance & Lifecycle page */
+
+/* Summary cards */
+.lifecycle-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.lifecycle-card .card-icon { font-size: 2rem; opacity: 0.6; }
+.lifecycle-card .card-value { font-size: 1.75rem; font-weight: 700; }
+.lifecycle-card .card-label { font-size: 12px; color: #64748b; }
+
+/* Tab styling */
+.lifecycle-tabs .nav-link {
+  color: #64748b;
+  font-weight: 600;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 10px 20px;
+  background: none;
+}
+.lifecycle-tabs .nav-link.active {
+  color: #0d6efd;
+  border-bottom-color: #0d6efd;
+  background: none;
+}
+.lifecycle-tabs .nav-link:hover:not(.active) {
+  color: #1e293b;
+  border-bottom-color: #e2e8f0;
+}
+
+/* Status badges for warranty */
+.badge-expired     { background: #dc3545; color: #fff; }
+.badge-expiring    { background: #ffc107; color: #212529; }
+.badge-valid       { background: #198754; color: #fff; }
+.badge-unknown     { background: #6c757d; color: #fff; }
+
+/* Finance table */
+.finance-type-row td { vertical-align: middle; }
+.depreciation-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: #e9ecef;
+  overflow: hidden;
+}
+.depreciation-bar__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #0d6efd, #6610f2);
+  transition: width 0.4s ease;
+}
+
+/* Empty state */
+.lifecycle-empty { font-size: 2.5rem; }

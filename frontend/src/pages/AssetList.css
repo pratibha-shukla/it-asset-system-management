@@ -1,0 +1,34 @@
+/* AssetList */
+.empty-state-icon { font-size: 3rem; }
+
+/* Virtualized list header */
+.list-header {
+  display: flex;
+  padding: 10px 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  background: #343a40;
+  color: #fff;
+}
+
+/* Virtualized list rows */
+.list-row {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid #e9ecef;
+}
+.list-row--even { background: #fff; }
+.list-row--odd  { background: #f8f9fa; }
+
+/* Column widths (flex values) */
+.list-col-asset   { flex: 2; }
+.list-col-serial  { flex: 1.5; }
+.list-col-price   { flex: 1; }
+.list-col-status  { flex: 1; }
+.list-col-branch  { flex: 1; }
+.list-col-actions { flex: 1; display: flex; gap: 4px; justify-content: flex-end; }
+
+/* Field validation error */
+.field-error { font-size: 12px; margin-top: 2px; }

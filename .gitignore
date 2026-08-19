@@ -1,0 +1,10 @@
+node_modules/
+**/node_modules/
+backend/target/
+backend/OpenJDK*
+dist/
+build/
+*.jar
+*.msi
+*.avif
+*.node

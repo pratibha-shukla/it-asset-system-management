@@ -1,0 +1,7 @@
+/* Login */
+.login-page {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+.login-container { max-width: 420px; }
+.login-logo      { font-size: 3rem; }
+.login-card      { border-radius: 16px; }

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>IT Asset Management System – Full Stack Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.7}
+.hero{background:linear-gradient(135deg,#1e3a5f 0%,#0f4c75 50%,#1b262c 100%);padding:60px 40px;text-align:center}
+.hero h1{font-size:2.4rem;color:#60a5fa;margin-bottom:10px}
+.hero p{color:#94a3b8;font-size:1.05rem;max-width:800px;margin:0 auto}
+.badge{display:inline-block;background:rgba(96,165,250,.15);border:1px solid #60a5fa;border-radius:20px;padding:4px 14px;font-size:.8rem;color:#60a5fa;margin-bottom:18px}
+.container{max-width:1100px;margin:0 auto;padding:40px 24px}
+.section{background:#1e293b;border-radius:14px;padding:36px;margin-bottom:30px;border:1px solid #334155}
+.section h2{font-size:1.5rem;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:12px;margin-bottom:22px}
+.section h3{font-size:1.1rem;color:#7dd3fc;margin:20px 0 10px}
+.section p{color:#94a3b8;margin-bottom:12px}
+ul.check{list-style:none;padding:0}
+ul.check li{padding:5px 0 5px 26px;position:relative;color:#cbd5e1;font-size:.94rem}
+ul.check li::before{content:"✓";position:absolute;left:0;color:#34d399;font-weight:bold}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+@media(max-width:680px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:#0f172a;border-radius:10px;padding:20px;border:1px solid #334155}
+.card h4{color:#f8fafc;margin-bottom:8px;font-size:1rem}
+.card p{color:#94a3b8;font-size:.88rem}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.78rem;font-weight:600;margin:3px}
+.tag.red{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d}
+.tag.blue{background:#0c1a3a;color:#93c5fd;border:1px solid #1e40af}
+.tag.green{background:#052e16;color:#86efac;border:1px solid #14532d}
+.tag.yellow{background:#451a03;color:#fcd34d;border:1px solid #78350f}
+.tag.purple{background:#2e1065;color:#c4b5fd;border:1px solid #4c1d95}
+.tag.orange{background:#431407;color:#fdba74;border:1px solid #7c2d12}
+.missing{background:#1a0a2e;border:1px solid #6d28d9;border-radius:10px;padding:20px;margin:18px 0}
+.missing h4{color:#a78bfa;margin-bottom:10px}
+.missing li{color:#c4b5fd;font-size:.9rem}
+.arch-box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px;text-align:center}
+.arch-box .icon{font-size:2rem;margin-bottom:6px}
+.arch-box h4{color:#f1f5f9;font-size:.95rem;margin-bottom:4px}
+.arch-box p{color:#64748b;font-size:.8rem}
+.arrow{text-align:center;color:#475569;font-size:1.5rem;line-height:1;margin:8px 0}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0}
+.flow-box{background:#1e293b;border:1px solid #475569;border-radius:8px;padding:8px 16px;font-size:.88rem;color:#cbd5e1;white-space:nowrap}
+.flow-arrow{color:#60a5fa;font-size:1.2rem}
+code{background:#0f172a;color:#34d399;padding:2px 6px;border-radius:4px;font-size:.88rem;font-family:'Courier New',monospace}
+pre{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;overflow-x:auto;font-size:.85rem;color:#e2e8f0;margin:12px 0;line-height:1.6}
+pre .kw{color:#818cf8}
+pre .str{color:#34d399}
+pre .cm{color:#475569}
+pre .cl{color:#fbbf24}
+.highlight-box{background:linear-gradient(135deg,#0c4a6e22,#0c4a6e44);border:1px solid #0ea5e9;border-radius:10px;padding:20px;margin:16px 0}
+.highlight-box h4{color:#38bdf8;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+thead th{background:#1e3a5f;color:#93c5fd;padding:10px 14px;text-align:left}
+tbody td{padding:9px 14px;border-bottom:1px solid #1e293b;color:#94a3b8}
+tbody tr:hover{background:#1e293b}
+footer{text-align:center;padding:30px;color:#475569;font-size:.85rem;border-top:1px solid #1e293b;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">Full Stack Project</div>
+  <h1>🖥️ IT Asset Management System</h1>
+  <p>Complete architecture guide — React + Redux + Bootstrap | Spring Boot + JPA + JWT | PostgreSQL | RBAC | API Versioning | Real-World Patterns for Large Datasets</p>
+</div>
+
+<div class="container">
+
+<!-- ══ TECH STACK ══ -->
+<div class="section">
+  <h2>🔧 Complete Technology Stack</h2>
+  <div class="grid3">
+    <div class="card">
+      <h4>⚛️ Frontend</h4>
+      <div style="margin-top:8px">
+        <span class="tag blue">React 18</span>
+        <span class="tag blue">Redux Toolkit</span>
+        <span class="tag blue">React Query v5</span>
+        <span class="tag blue">React Router v6</span>
+        <span class="tag blue">Bootstrap 5</span>
+        <span class="tag blue">React Hook Form</span>
+        <span class="tag blue">Yup Validation</span>
+        <span class="tag blue">React Window</span>
+        <span class="tag blue">React.lazy</span>
+        <span class="tag blue">Axios</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4>☕ Backend</h4>
+      <div style="margin-top:8px">
+        <span class="tag green">Spring Boot 3.2</span>
+        <span class="tag green">Spring Security 6</span>
+        <span class="tag green">Spring Data JPA</span>
+        <span class="tag green">JWT (jjwt 0.12)</span>
+        <span class="tag green">Bean Validation</span>
+        <span class="tag green">Hibernate Envers</span>
+        <span class="tag green">ModelMapper</span>
+        <span class="tag green">Lombok</span>
+        <span class="tag green">SpringDoc OpenAPI</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4>🗄️ Database &amp; Tools</h4>
+      <div style="margin-top:8px">
+        <span class="tag orange">PostgreSQL 15</span>
+        <span class="tag orange">JPA / Hibernate</span>
+        <span class="tag yellow">Postman</span>
+        <span class="tag yellow">Swagger UI</span>
+        <span class="tag red">sessionStorage (JWT)</span>
+        <span class="tag purple">RBAC (ADMIN/EMPLOYEE)</span>
+        <span class="tag purple">API Versioning v1</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ARCHITECTURE ══ -->
+<div class="section">
+  <h2>🏗️ System Architecture</h2>
+  <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;background:#0f172a;border-radius:10px;padding:10px">
+    <!-- Browser -->
+    <rect x="20" y="20" width="160" height="300" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="100" y="45" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="bold">Browser</text>
+    <rect x="35" y="55" width="130" height="32" rx="6" fill="#0f172a" stroke="#1e40af"/>
+    <text x="100" y="76" text-anchor="middle" fill="#93c5fd" font-size="11">React App</text>
+    <rect x="35" y="95" width="130" height="25" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="100" y="112" text-anchor="middle" fill="#93c5fd" font-size="10">Redux Store</text>
+    <rect x="35" y="128" width="130" height="25" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="100" y="145" text-anchor="middle" fill="#93c5fd" font-size="10">React Query Cache</text>
+    <rect x="35" y="161" width="130" height="25" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="100" y="178" text-anchor="middle" fill="#93c5fd" font-size="10">React Window (virt)</text>
+    <rect x="35" y="194" width="130" height="25" rx="5" fill="#0f172a" stroke="#450a0a" stroke-width="1.5"/>
+    <text x="100" y="211" text-anchor="middle" fill="#fca5a5" font-size="10">JWT → sessionStorage</text>
+    <rect x="35" y="227" width="130" height="25" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="100" y="244" text-anchor="middle" fill="#93c5fd" font-size="10">Axios + Interceptors</text>
+    <rect x="35" y="260" width="130" height="40" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="100" y="278" text-anchor="middle" fill="#86efac" font-size="10">React.lazy</text>
+    <text x="100" y="293" text-anchor="middle" fill="#86efac" font-size="10">Code Splitting</text>
+
+    <!-- Arrow -->
+    <path d="M 185 170 L 235 170" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr)"/>
+    <path d="M 235 170 L 185 170" stroke="#60a5fa" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+    <text x="210" y="163" text-anchor="middle" fill="#64748b" font-size="9">HTTPS/JWT</text>
+    <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#60a5fa"/></marker></defs>
+
+    <!-- Spring Boot -->
+    <rect x="240" y="20" width="200" height="300" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="340" y="45" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">Spring Boot</text>
+    <rect x="255" y="55" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="72" text-anchor="middle" fill="#86efac" font-size="10">Security Filter Chain</text>
+    <rect x="255" y="88" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="105" text-anchor="middle" fill="#86efac" font-size="10">JWT Auth Filter</text>
+    <rect x="255" y="121" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="138" text-anchor="middle" fill="#86efac" font-size="10">RBAC (ADMIN/EMPLOYEE)</text>
+    <rect x="255" y="154" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="171" text-anchor="middle" fill="#86efac" font-size="10">API v1 Controllers</text>
+    <rect x="255" y="187" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="204" text-anchor="middle" fill="#86efac" font-size="10">Services (Business Logic)</text>
+    <rect x="255" y="220" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="237" text-anchor="middle" fill="#86efac" font-size="10">JPA Repositories</text>
+    <rect x="255" y="253" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="270" text-anchor="middle" fill="#86efac" font-size="10">Bean Validation</text>
+    <rect x="255" y="286" width="170" height="25" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="340" y="303" text-anchor="middle" fill="#86efac" font-size="10">Audit Log / Envers</text>
+
+    <!-- Arrow -->
+    <path d="M 445 170 L 495 170" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr2)"/>
+    <path d="M 495 170 L 445 170" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+    <text x="470" y="163" text-anchor="middle" fill="#64748b" font-size="9">JDBC</text>
+    <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/></marker></defs>
+
+    <!-- PostgreSQL -->
+    <rect x="500" y="50" width="160" height="240" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="580" y="75" text-anchor="middle" fill="#f59e0b" font-size="13" font-weight="bold">PostgreSQL</text>
+    <rect x="515" y="88" width="130" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="580" y="103" text-anchor="middle" fill="#fcd34d" font-size="10">users</text>
+    <rect x="515" y="118" width="130" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="580" y="133" text-anchor="middle" fill="#fcd34d" font-size="10">assets</text>
+    <rect x="515" y="148" width="130" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="580" y="163" text-anchor="middle" fill="#fcd34d" font-size="10">asset_requests</text>
+    <rect x="515" y="178" width="130" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="580" y="193" text-anchor="middle" fill="#fcd34d" font-size="10">branches</text>
+    <rect x="515" y="208" width="130" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="580" y="223" text-anchor="middle" fill="#fcd34d" font-size="10">audit_logs</text>
+    <rect x="515" y="238" width="130" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="580" y="253" text-anchor="middle" fill="#fcd34d" font-size="10">asset_history (Envers)</text>
+
+    <!-- Postman -->
+    <rect x="700" y="100" width="160" height="130" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="780" y="125" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="bold">Postman</text>
+    <text x="780" y="148" text-anchor="middle" fill="#94a3b8" font-size="10">API Testing</text>
+    <rect x="715" y="158" width="130" height="20" rx="4" fill="#0f172a" stroke="#7c2d12"/>
+    <text x="780" y="172" text-anchor="middle" fill="#fdba74" font-size="9">Collections / Environments</text>
+    <rect x="715" y="186" width="130" height="20" rx="4" fill="#0f172a" stroke="#7c2d12"/>
+    <text x="780" y="200" text-anchor="middle" fill="#fdba74" font-size="9">Auth Token Scripts</text>
+    <rect x="715" y="214" width="130" height="20" rx="4" fill="#0f172a" stroke="#7c2d12"/>
+    <text x="780" y="228" text-anchor="middle" fill="#fdba74" font-size="9">Swagger UI /v3/api-docs</text>
+    <path d="M 665 160 L 700 160" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="682" y="155" text-anchor="middle" fill="#64748b" font-size="8">test</text>
+  </svg>
+
+  <div style="margin-top:20px">
+    <h3>Request Flow</h3>
+    <div class="flow">
+      <div class="flow-box">👤 User Login</div><div class="flow-arrow">→</div>
+      <div class="flow-box">POST /api/v1/auth/login</div><div class="flow-arrow">→</div>
+      <div class="flow-box">JWT Generated</div><div class="flow-arrow">→</div>
+      <div class="flow-box">sessionStorage.setItem('token')</div><div class="flow-arrow">→</div>
+      <div class="flow-box">Redux authSlice updated</div>
+    </div>
+    <div class="flow">
+      <div class="flow-box">API Request</div><div class="flow-arrow">→</div>
+      <div class="flow-box">Axios Interceptor adds Bearer token</div><div class="flow-arrow">→</div>
+      <div class="flow-box">JwtAuthFilter validates</div><div class="flow-arrow">→</div>
+      <div class="flow-box">RBAC check (@PreAuthorize)</div><div class="flow-arrow">→</div>
+      <div class="flow-box">Service → Repository → DB</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROJECT STRUCTURE ══ -->
+<div class="section">
+  <h2>📁 Project Structure</h2>
+  <div class="grid2">
+    <div>
+      <h3>Backend (Spring Boot)</h3>
+      <pre>
+it-asset-management/
+├── src/main/java/com/company/itasset/
+│   ├── ItAssetApplication.java
+│   ├── config/
+│   │   ├── SecurityConfig.java
+│   │   ├── JpaAuditingConfig.java
+│   │   └── ModelMapperConfig.java
+│   ├── security/
+│   │   ├── JwtTokenProvider.java
+│   │   ├── JwtAuthenticationFilter.java
+│   │   └── UserDetailsServiceImpl.java
+│   ├── entity/
+│   │   ├── User.java
+│   │   ├── Asset.java
+│   │   ├── AssetRequest.java
+│   │   ├── Branch.java
+│   │   ├── AuditLog.java
+│   │   └── enums/
+│   │       ├── Role.java
+│   │       ├── AssetStatus.java
+│   │       └── RequestStatus.java
+│   ├── repository/
+│   │   ├── UserRepository.java
+│   │   ├── AssetRepository.java
+│   │   ├── AssetRequestRepository.java
+│   │   └── BranchRepository.java
+│   ├── dto/
+│   │   ├── request/
+│   │   │   ├── LoginRequest.java
+│   │   │   ├── RegisterRequest.java
+│   │   │   ├── AssetDTO.java
+│   │   │   ├── AssetRequestDTO.java
+│   │   │   └── BranchDTO.java
+│   │   └── response/
+│   │       ├── AuthResponse.java
+│   │       ├── AssetResponse.java
+│   │       ├── ApiResponse.java
+│   │       └── PagedResponse.java
+│   ├── service/
+│   │   ├── AuthService.java
+│   │   ├── AssetService.java
+│   │   ├── AssetRequestService.java
+│   │   ├── BranchService.java
+│   │   └── AuditLogService.java
+│   ├── controller/
+│   │   └── v1/
+│   │       ├── AuthController.java
+│   │       ├── AssetController.java
+│   │       ├── AssetRequestController.java
+│   │       ├── BranchController.java
+│   │       └── AdminController.java
+│   └── exception/
+│       ├── GlobalExceptionHandler.java
+│       ├── ResourceNotFoundException.java
+│       ├── UnauthorizedException.java
+│       └── ValidationException.java
+└── src/main/resources/
+    └── application.yml</pre>
+    </div>
+    <div>
+      <h3>Frontend (React)</h3>
+      <pre>
+it-asset-frontend/
+├── public/
+├── src/
+│   ├── api/
+│   │   ├── axiosInstance.js      ← JWT interceptor
+│   │   ├── assetApi.js
+│   │   ├── authApi.js
+│   │   └── requestApi.js
+│   ├── store/
+│   │   ├── index.js              ← Redux store
+│   │   ├── authSlice.js
+│   │   ├── assetSlice.js
+│   │   └── notificationSlice.js
+│   ├── hooks/
+│   │   ├── useDebounce.js
+│   │   ├── useThrottle.js
+│   │   └── useAuth.js
+│   ├── pages/
+│   │   ├── Login.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── AssetList.jsx         ← React Window
+│   │   ├── RequestForm.jsx       ← Validation
+│   │   ├── AdminDashboard.jsx
+│   │   ├── BranchManagement.jsx
+│   │   └── UserManagement.jsx
+│   ├── components/
+│   │   ├── ProtectedRoute.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── AssetCard.jsx
+│   │   └── Notification.jsx
+│   ├── App.jsx                   ← React.lazy routes
+│   ├── queryClient.js            ← React Query setup
+│   └── main.jsx
+├── package.json
+└── .env</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══ API ENDPOINTS ══ -->
+<div class="section">
+  <h2>🔗 API Endpoints (v1)</h2>
+  <table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/auth/login</code></td><td>Public</td><td>Login, returns JWT</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/auth/register</code></td><td>ADMIN</td><td>Register new user</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/assets</code></td><td>ALL</td><td>Get assets (paginated, filterable)</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/assets/{id}</code></td><td>ALL</td><td>Get single asset</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/assets</code></td><td>ADMIN</td><td>Create asset</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/assets/{id}</code></td><td>ADMIN</td><td>Update asset</td></tr>
+      <tr><td><span class="tag red">DELETE</span></td><td><code>/api/v1/assets/{id}</code></td><td>ADMIN</td><td>Delete asset</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/assets/{id}/assign</code></td><td>ADMIN</td><td>Assign asset to user</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/requests</code></td><td>ADMIN=all, EMP=own</td><td>List requests</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/requests</code></td><td>EMPLOYEE</td><td>Submit asset request</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/requests/{id}/approve</code></td><td>ADMIN</td><td>Approve request</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/requests/{id}/reject</code></td><td>ADMIN</td><td>Reject request</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/branches</code></td><td>ALL</td><td>List branches</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/branches</code></td><td>ADMIN</td><td>Create branch</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/admin/users</code></td><td>ADMIN</td><td>List all users</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/admin/audit-logs</code></td><td>ADMIN</td><td>View audit trail</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/admin/stats</code></td><td>ADMIN</td><td>Dashboard statistics</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ ROLE ACCESS ══ -->
+<div class="section">
+  <h2>🔐 Role-Based Access Control</h2>
+  <div class="grid2">
+    <div class="card">
+      <h4>👤 EMPLOYEE can:</h4>
+      <ul class="check" style="margin-top:10px">
+        <li>View all assets and availability status</li>
+        <li>Filter/search assets by type, status, branch</li>
+        <li>Submit product/asset requests with form</li>
+        <li>View own submitted requests and their status</li>
+        <li>View own profile</li>
+        <li>Cannot see other users' data</li>
+        <li>Cannot create, update, or delete assets</li>
+        <li>Cannot approve/reject requests</li>
+        <li>Cannot see admin dashboard or audit logs</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🔑 ADMIN can:</h4>
+      <ul class="check" style="margin-top:10px">
+        <li>Full CRUD on all assets</li>
+        <li>Assign/unassign assets to users</li>
+        <li>View ALL asset requests (all employees)</li>
+        <li>Approve or reject requests with notes</li>
+        <li>Create/manage branches</li>
+        <li>Register new users and manage roles</li>
+        <li>View full audit log trail</li>
+        <li>View statistics dashboard</li>
+        <li>View asset history (Envers versioning)</li>
+        <li>Export data (CSV/PDF)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MISSING FEATURES ══ -->
+<div class="section">
+  <h2>💡 What You May Have Missed — Real-World Features</h2>
+
+  <div class="missing">
+    <h4>🔄 Refresh Token Strategy</h4>
+    <ul class="check">
+      <li>Short-lived access token (15 min) + long-lived refresh token (7 days)</li>
+      <li>Refresh token stored in httpOnly cookie (more secure than sessionStorage)</li>
+      <li>Silent token refresh via Axios response interceptor on 401</li>
+      <li>Token blacklisting table for logout invalidation</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>📄 Pagination + Sorting + Filtering (Backend + Frontend)</h4>
+    <ul class="check">
+      <li>Spring Pageable: <code>GET /api/v1/assets?page=0&size=20&sort=name,asc</code></li>
+      <li>JPA Specification for dynamic filtering (type, status, branch, date range)</li>
+      <li>Frontend: React Query infinite scroll OR page-based navigation</li>
+      <li>React Window virtualizes large lists (10,000+ rows render at 60fps)</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>🔍 Debounce + Throttle Usage</h4>
+    <ul class="check">
+      <li>Debounce (300ms) on search input — fires API call only after user stops typing</li>
+      <li>Throttle on scroll events — prevents excessive re-renders during window scroll</li>
+      <li>Throttle on form submit button — prevents double-submission on slow networks</li>
+      <li>Debounce on asset filter dropdowns — waits for user to finish selecting</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>⚡ React Query Patterns</h4>
+    <ul class="check">
+      <li>useQuery for GET requests with staleTime, cacheTime, refetchOnWindowFocus</li>
+      <li>useMutation for POST/PUT/DELETE with optimistic updates</li>
+      <li>Invalidate queries after mutation to refresh lists automatically</li>
+      <li>Query keys factory for structured cache management</li>
+      <li>useInfiniteQuery for infinite scroll on large asset lists</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>🗃️ Redux vs React Query Separation</h4>
+    <ul class="check">
+      <li>Redux: auth state (user, token, role), UI state (sidebar open, theme), notifications</li>
+      <li>React Query: ALL server data (assets, requests, branches, users)</li>
+      <li>Never store server data in Redux — React Query owns that cache</li>
+      <li>Redux Persist (with sessionStorage adapter) for auth state survival on page refresh</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>✅ Validation Strategy (Both Sides)</h4>
+    <ul class="check">
+      <li>Frontend: React Hook Form + Yup schema validation with real-time feedback</li>
+      <li>Backend: Jakarta Bean Validation (@NotBlank, @Email, @Size, @Pattern)</li>
+      <li>Custom validators: UniqueEmailValidator, SerialNumberValidator</li>
+      <li>GlobalExceptionHandler catches MethodArgumentNotValidException → 400 with field errors</li>
+      <li>Frontend shows per-field errors from API response matching form field names</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>📦 Code Splitting with React.lazy</h4>
+    <ul class="check">
+      <li>Each route/page is lazy-loaded — reduces initial bundle by 60-70%</li>
+      <li>Suspense fallback shows loading skeleton while chunk downloads</li>
+      <li>Role-based lazy imports: admin pages never downloaded by employees</li>
+      <li>Dynamic import for heavy libraries (charts, export tools)</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>🔁 Persist After Logout / Different Browser</h4>
+    <ul class="check">
+      <li>sessionStorage: data cleared on tab/browser close (security feature)</li>
+      <li>Employee view uses React Query cache + sessionStorage — persists within same tab session</li>
+      <li>On different browser/tab: user must re-login (expected with sessionStorage)</li>
+      <li>Redux Persist with sessionStorage adapter keeps auth alive on page refresh within same tab</li>
+      <li>Important: Do NOT use localStorage for JWT (XSS risk)</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>📊 Large Dataset Handling</h4>
+    <ul class="check">
+      <li>React Window FixedSizeList virtualizes 10,000+ rows — renders only visible items</li>
+      <li>Backend uses cursor-based pagination for very large tables (keyset pagination)</li>
+      <li>Database indexes: CREATE INDEX on asset status, branch_id, assigned_to</li>
+      <li>N+1 problem solved: use @EntityGraph or JOIN FETCH in repositories</li>
+      <li>PostgreSQL full-text search (tsvector) for fast asset name/description search</li>
+      <li>Spring Data Projections to return only needed columns (avoid over-fetching)</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>🕵️ Audit Trail with Hibernate Envers</h4>
+    <ul class="check">
+      <li>@Audited on Asset, AssetRequest entities → auto-generates _AUD tables</li>
+      <li>Stores every change: who changed what, old value, new value, timestamp</li>
+      <li>Admin can query full history: "Show me all changes to Asset #42"</li>
+      <li>API versioning: /api/v1 keeps old clients working when v2 is introduced</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>🌐 CORS &amp; Security Headers</h4>
+    <ul class="check">
+      <li>CORS configured to allow only your React dev/prod origin</li>
+      <li>CSRF disabled (stateless JWT API doesn't need it)</li>
+      <li>Security headers: X-Frame-Options, X-Content-Type-Options, HSTS</li>
+      <li>Rate limiting: bucket4j library to limit login attempts (prevent brute force)</li>
+    </ul>
+  </div>
+
+  <div class="missing">
+    <h4>🚨 Error Handling &amp; Notifications</h4>
+    <ul class="check">
+      <li>Global Axios error interceptor → dispatches Redux notification on any API error</li>
+      <li>Toast notifications (react-toastify) for success/error/warning</li>
+      <li>Axios retry on network failure (axios-retry with exponential backoff)</li>
+      <li>React Error Boundary wraps each lazy page to catch render errors gracefully</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══ POSTMAN ══ -->
+<div class="section">
+  <h2>🧪 Postman Setup Guide</h2>
+  <div class="highlight-box">
+    <h4>Environment Variables</h4>
+    <pre>BASE_URL = http://localhost:8080
+TOKEN    = (auto-set by login script)</pre>
+  </div>
+  <h3>Auto-token Script (Tests tab of Login request):</h3>
+  <pre><span class="kw">const</span> response = pm.response.json();
+<span class="kw">if</span> (response.token) {
+    pm.environment.set(<span class="str">"TOKEN"</span>, response.token);
+    console.log(<span class="str">"✅ Token saved to environment"</span>);
+}
+</pre>
+  <h3>Authorization Header (all protected requests):</h3>
+  <pre>Type: Bearer Token
+Token: {{TOKEN}}</pre>
+  <h3>Test Example (GET /api/v1/assets):</h3>
+  <pre><span class="cm">// Tests tab</span>
+pm.test(<span class="str">"Status is 200"</span>, () => pm.response.to.have.status(200));
+pm.test(<span class="str">"Has content"</span>,  () => {
+    <span class="kw">const</span> json = pm.response.json();
+    pm.expect(json.content).to.be.an(<span class="str">'array'</span>);
+    pm.expect(json.totalElements).to.be.a(<span class="str">'number'</span>);
+});</pre>
+</div>
+
+<!-- ══ DATABASE ══ -->
+<div class="section">
+  <h2>🗄️ Database Design</h2>
+  <h3>Key PostgreSQL Indexes for Large Datasets:</h3>
+  <pre><span class="cm">-- Run these after Hibernate creates the schema</span>
+<span class="kw">CREATE INDEX</span> idx_assets_status    <span class="kw">ON</span> assets(status);
+<span class="kw">CREATE INDEX</span> idx_assets_branch     <span class="kw">ON</span> assets(branch_id);
+<span class="kw">CREATE INDEX</span> idx_assets_assigned   <span class="kw">ON</span> assets(assigned_to_user_id);
+<span class="kw">CREATE INDEX</span> idx_assets_type       <span class="kw">ON</span> assets(type);
+<span class="kw">CREATE INDEX</span> idx_requests_user     <span class="kw">ON</span> asset_requests(user_id);
+<span class="kw">CREATE INDEX</span> idx_requests_status   <span class="kw">ON</span> asset_requests(status);
+<span class="kw">CREATE INDEX</span> idx_users_email       <span class="kw">ON</span> users(email);
+
+<span class="cm">-- Full-text search on asset name + description</span>
+<span class="kw">ALTER TABLE</span> assets <span class="kw">ADD COLUMN</span> fts_vector tsvector
+    <span class="kw">GENERATED ALWAYS AS</span> (to_tsvector(<span class="str">'english'</span>,
+        coalesce(name, <span class="str">''</span>) || <span class="str">' '</span> || coalesce(description, <span class="str">''</span>)
+    )) STORED;
+<span class="kw">CREATE INDEX</span> idx_assets_fts <span class="kw">ON</span> assets <span class="kw">USING</span> gin(fts_vector);</pre>
+</div>
+
+<div class="section">
+  <h2>📋 File Index — What to Open</h2>
+  <table>
+    <thead><tr><th>File</th><th>What's Inside</th></tr></thead>
+    <tbody>
+      <tr><td><code>backend-pom.xml</code></td><td>Maven dependencies</td></tr>
+      <tr><td><code>backend-application.yml</code></td><td>Spring Boot + PostgreSQL + JWT config</td></tr>
+      <tr><td><code>backend-security-jwt.java</code></td><td>SecurityConfig, JwtTokenProvider, JwtAuthFilter, UserDetailsServiceImpl</td></tr>
+      <tr><td><code>backend-entities.java</code></td><td>User, Asset, AssetRequest, Branch, AuditLog, all enums</td></tr>
+      <tr><td><code>backend-repositories-dtos.java</code></td><td>All JPA repositories + all DTOs</td></tr>
+      <tr><td><code>backend-services.java</code></td><td>AuthService, AssetService, AssetRequestService, BranchService</td></tr>
+      <tr><td><code>backend-controllers.java</code></td><td>All v1 controllers with RBAC annotations</td></tr>
+      <tr><td><code>backend-exceptions.java</code></td><td>GlobalExceptionHandler + custom exceptions</td></tr>
+      <tr><td><code>frontend-package.json</code></td><td>All npm dependencies</td></tr>
+      <tr><td><code>frontend-store-slices.js</code></td><td>Redux store, authSlice, assetSlice, notificationSlice</td></tr>
+      <tr><td><code>frontend-app-routing.jsx</code></td><td>App.jsx with React.lazy, Suspense, ProtectedRoute</td></tr>
+      <tr><td><code>frontend-login.jsx</code></td><td>Login page with React Hook Form + Yup validation</td></tr>
+      <tr><td><code>frontend-asset-list.jsx</code></td><td>React Window + React Query + debounce search</td></tr>
+      <tr><td><code>frontend-request-form.jsx</code></td><td>Asset request form with full validation</td></tr>
+      <tr><td><code>frontend-utils-hooks.js</code></td><td>Axios instance, useDebounce, useThrottle, query keys</td></tr>
+      <tr><td><code>frontend-admin-dashboard.jsx</code></td><td>Admin-only stats + user management</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+<footer>IT Asset Management System &nbsp;|&nbsp; Full Stack Architecture Guide &nbsp;|&nbsp; June 2026</footer>
+</body>
+</html>

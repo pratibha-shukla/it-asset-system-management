@@ -1,0 +1,5 @@
+/* RequestForm */
+.request-container { max-width: 800px; }
+.section-header    { font-size: 11px; letter-spacing: 1px; }
+.no-resize         { resize: none; }
+.field-error       { font-size: 12px; margin-top: 2px; }

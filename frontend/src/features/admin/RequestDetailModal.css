@@ -1,0 +1,12 @@
+/* RequestDetailModal — styles for the request detail dl grid and justification */
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin-bottom: 0;
+}
+.detail-grid dt { font-size: 12px; white-space: nowrap; }
+.detail-grid dd { font-size: 14px; }
+
+.pre-wrap { white-space: pre-wrap; }

@@ -1,0 +1,126 @@
+/* AssetCard */
+.asset-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.asset-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* Icon banner */
+.asset-card__banner {
+  position: relative;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.asset-card__icon {
+  font-size: 64px;
+  line-height: 1;
+  user-select: none;
+}
+.asset-card__status-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.asset-card__type-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.15);
+  color: #1e293b;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Body */
+.asset-card__body {
+  padding: 16px;
+  flex: 1;
+}
+.asset-card__name {
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-size: 15px;
+  color: #1e293b;
+}
+.asset-card__subtitle {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+.asset-card__description {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+.asset-card__price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0d6efd;
+  margin: 8px 0;
+}
+.asset-card__details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  font-size: 11px;
+  color: #64748b;
+  margin: 0;
+}
+.asset-card__details dd {
+  margin: 0;
+}
+
+/* Actions */
+.asset-card__actions {
+  padding: 12px 16px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  gap: 8px;
+}
+.asset-card__btn-assign {
+  flex: 1;
+  padding: 7px;
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.asset-card__btn-edit {
+  flex: 1;
+  padding: 7px;
+  background: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.asset-card__btn-delete {
+  padding: 7px 10px;
+  background: #fee2e2;
+  color: #dc3545;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}

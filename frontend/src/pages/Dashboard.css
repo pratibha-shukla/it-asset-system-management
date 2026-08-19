@@ -1,0 +1,55 @@
+/* Dashboard */
+.dashboard-page {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+/* Welcome banner */
+.dashboard-banner {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0d6efd 100%);
+  border-radius: 16px;
+  padding: 32px 40px;
+  margin-bottom: 28px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dashboard-banner__title  { font-size: 1.5rem; }
+.dashboard-banner__sub    { opacity: 0.85; margin-bottom: 12px; }
+.dashboard-banner__emoji  { font-size: 80px; opacity: 0.3; }
+
+/* Stat cards */
+.stat-icon  { font-size: 28px; }
+.stat-value { font-size: 28px; font-weight: 700; }
+.stat-label { font-size: 12px; color: #64748b; }
+
+/* Filter buttons */
+.filter-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  color: #64748b;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+.filter-btn--active {
+  background: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
+
+/* Empty state */
+.empty-icon { font-size: 3rem; }
+
+/* Quick link cards */
+.quick-link-card {
+  border-radius: 12px;
+  color: #fff;
+}
+.quick-link-card__icon { font-size: 40px; }
+.quick-link-card__sub  { opacity: 0.85; }

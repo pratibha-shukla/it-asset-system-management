@@ -1,0 +1,37 @@
+/* AuditLogs */
+.audit-action-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.audit-action--CREATE            { background: #d1fae5; color: #065f46; }
+.audit-action--UPDATE            { background: #dbeafe; color: #1e40af; }
+.audit-action--DELETE            { background: #fee2e2; color: #991b1b; }
+.audit-action--ASSIGN            { background: #ede9fe; color: #5b21b6; }
+.audit-action--UNASSIGN          { background: #fef3c7; color: #92400e; }
+.audit-action--APPROVE           { background: #d1fae5; color: #065f46; }
+.audit-action--REJECT            { background: #fee2e2; color: #991b1b; }
+.audit-action--SCHEDULED_UNASSIGN{ background: #f1f5f9; color: #334155; }
+.audit-action--LOGIN             { background: #e0f2fe; color: #0c4a6e; }
+.audit-action--default           { background: #f1f5f9; color: #475569; }
+
+.audit-performer--system {
+  background: #1e293b;
+  color: #94a3b8;
+  font-family: monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.audit-details {
+  font-size: 12px;
+  color: #64748b;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

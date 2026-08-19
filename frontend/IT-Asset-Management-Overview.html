@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>IT Asset Management System – Full Stack Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.7}
+.hero{background:linear-gradient(135deg,#1e3a5f 0%,#0f4c75 50%,#1b262c 100%);padding:60px 40px;text-align:center}
+.hero h1{font-size:2.4rem;color:#60a5fa;margin-bottom:10px}
+.hero p{color:#94a3b8;font-size:1.05rem;max-width:860px;margin:0 auto}
+.badge{display:inline-block;background:rgba(96,165,250,.15);border:1px solid #60a5fa;border-radius:20px;padding:4px 14px;font-size:.8rem;color:#60a5fa;margin-bottom:18px}
+.badge-new{display:inline-block;background:rgba(52,211,153,.15);border:1px solid #34d399;border-radius:20px;padding:4px 14px;font-size:.8rem;color:#34d399;margin-bottom:18px;margin-left:6px}
+.badge-ai{display:inline-block;background:rgba(168,85,247,.15);border:1px solid #a855f7;border-radius:20px;padding:4px 14px;font-size:.8rem;color:#a855f7;margin-bottom:18px;margin-left:6px}
+.container{max-width:1100px;margin:0 auto;padding:40px 24px}
+.section{background:#1e293b;border-radius:14px;padding:36px;margin-bottom:30px;border:1px solid #334155}
+.section.new-feature{border-color:#34d399;box-shadow:0 0 0 1px #34d39922}
+.section.ai-feature{border-color:#a855f7;box-shadow:0 0 0 1px #a855f722}
+.section.security-feature{border-color:#f59e0b;box-shadow:0 0 0 1px #f59e0b22}
+.section h2{font-size:1.5rem;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:12px;margin-bottom:22px}
+.section h3{font-size:1.1rem;color:#7dd3fc;margin:20px 0 10px}
+.section p{color:#94a3b8;margin-bottom:12px}
+ul.check{list-style:none;padding:0}
+ul.check li{padding:5px 0 5px 26px;position:relative;color:#cbd5e1;font-size:.94rem}
+ul.check li::before{content:"✓";position:absolute;left:0;color:#34d399;font-weight:bold}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+@media(max-width:780px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.card{background:#0f172a;border-radius:10px;padding:20px;border:1px solid #334155}
+.card.ai-card{border-color:#4c1d95}
+.card h4{color:#f8fafc;margin-bottom:8px;font-size:1rem}
+.card p{color:#94a3b8;font-size:.88rem}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.78rem;font-weight:600;margin:3px}
+.tag.red{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d}
+.tag.blue{background:#0c1a3a;color:#93c5fd;border:1px solid #1e40af}
+.tag.green{background:#052e16;color:#86efac;border:1px solid #14532d}
+.tag.yellow{background:#451a03;color:#fcd34d;border:1px solid #78350f}
+.tag.purple{background:#2e1065;color:#c4b5fd;border:1px solid #4c1d95}
+.tag.orange{background:#431407;color:#fdba74;border:1px solid #7c2d12}
+.tag.teal{background:#042f2e;color:#5eead4;border:1px solid #0f766e}
+.tag.pink{background:#2d0a1e;color:#f9a8d4;border:1px solid #9d174d}
+.missing{background:#1a0a2e;border:1px solid #6d28d9;border-radius:10px;padding:20px;margin:18px 0}
+.missing h4{color:#a78bfa;margin-bottom:10px}
+.missing li{color:#c4b5fd;font-size:.9rem}
+.new-box{background:#052e16;border:1px solid #34d399;border-radius:10px;padding:20px;margin:18px 0}
+.new-box h4{color:#34d399;margin-bottom:10px}
+.ai-box{background:#1a0a2e;border:1px solid #a855f7;border-radius:10px;padding:20px;margin:18px 0}
+.ai-box h4{color:#c084fc;margin-bottom:10px;font-size:1rem}
+.ai-box li{color:#e9d5ff;font-size:.9rem}
+.security-box{background:#1a1000;border:1px solid #f59e0b;border-radius:10px;padding:20px;margin:18px 0}
+.security-box h4{color:#fbbf24;margin-bottom:10px}
+.security-box li{color:#fef3c7;font-size:.9rem}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0}
+.flow-box{background:#1e293b;border:1px solid #475569;border-radius:8px;padding:8px 16px;font-size:.85rem;color:#cbd5e1;white-space:nowrap}
+.flow-box.ai{border-color:#7c3aed;background:#1a0a2e;color:#c4b5fd}
+.flow-box.secure{border-color:#f59e0b;background:#1a1000;color:#fcd34d}
+.flow-arrow{color:#60a5fa;font-size:1.2rem}
+code{background:#0f172a;color:#34d399;padding:2px 6px;border-radius:4px;font-size:.88rem;font-family:'Courier New',monospace}
+pre{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px;overflow-x:auto;font-size:.85rem;color:#e2e8f0;margin:12px 0;line-height:1.6}
+pre .kw{color:#818cf8}
+pre .str{color:#34d399}
+pre .cm{color:#475569}
+pre .cl{color:#fbbf24}
+pre .sc{color:#f9a8d4}
+.highlight-box{background:linear-gradient(135deg,#0c4a6e22,#0c4a6e44);border:1px solid #0ea5e9;border-radius:10px;padding:20px;margin:16px 0}
+.highlight-box h4{color:#38bdf8;margin-bottom:10px}
+.perf-box{background:linear-gradient(135deg,#05140a,#071a0f);border:1px solid #34d399;border-radius:10px;padding:20px;margin:16px 0}
+.perf-box h4{color:#34d399;margin-bottom:12px}
+.perf-row{display:flex;align-items:center;gap:16px;margin:8px 0;font-size:.9rem}
+.perf-before{color:#fca5a5;text-decoration:line-through;min-width:80px}
+.perf-after{color:#86efac;font-weight:700;min-width:80px}
+.perf-label{color:#94a3b8}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+thead th{background:#1e3a5f;color:#93c5fd;padding:10px 14px;text-align:left}
+tbody td{padding:9px 14px;border-bottom:1px solid #1e293b;color:#94a3b8}
+tbody tr:hover{background:#1e293b}
+.new-row td{background:#052e1622}
+.new-row td:first-child{border-left:3px solid #34d399}
+.ai-row td{background:#1a0a2e22}
+.ai-row td:first-child{border-left:3px solid #a855f7}
+.step{display:flex;gap:16px;margin:14px 0;align-items:flex-start}
+.step-num{background:#7c3aed;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;margin-top:2px}
+.step-content h5{color:#c4b5fd;margin-bottom:4px;font-size:.95rem}
+.step-content p{color:#94a3b8;font-size:.88rem;margin:0}
+footer{text-align:center;padding:30px;color:#475569;font-size:.85rem;border-top:1px solid #1e293b;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">Full Stack Project</div>
+  <div class="badge-new">✨ Updated August 2026</div>
+  <div class="badge-ai">🤖 AI Workflow Integrated</div>
+  <h1>🖥️ IT Asset Management System</h1>
+  <p>React + Redux + Bootstrap | Spring Boot + JPA + JWT (httpOnly) | PostgreSQL + pgvector | MCP · A2A · RAG · LLMOps · Vector DB | RBAC | Nightly Scheduler | Audit Logs | Lifecycle &amp; Finance</p>
+</div>
+
+<div class="container">
+
+<!-- ══ TECH STACK ══ -->
+<div class="section">
+  <h2>🔧 Complete Technology Stack</h2>
+  <div class="grid3">
+    <div class="card">
+      <h4>⚛️ Frontend</h4>
+      <div style="margin-top:8px">
+        <span class="tag blue">React 18</span>
+        <span class="tag blue">Redux Toolkit</span>
+        <span class="tag blue">React Query v5</span>
+        <span class="tag blue">React Router v6</span>
+        <span class="tag blue">Bootstrap 5</span>
+        <span class="tag blue">React Hook Form</span>
+        <span class="tag blue">Yup Validation</span>
+        <span class="tag blue">React Window</span>
+        <span class="tag blue">React.lazy + Suspense</span>
+        <span class="tag blue">Axios (withCredentials)</span>
+        <span class="tag teal">Vite (JS + CSS bundles)</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4>☕ Backend</h4>
+      <div style="margin-top:8px">
+        <span class="tag green">Spring Boot 3.2</span>
+        <span class="tag green">Spring Security 6</span>
+        <span class="tag green">Spring Data JPA</span>
+        <span class="tag green">JWT — httpOnly Cookie</span>
+        <span class="tag green">Refresh Token</span>
+        <span class="tag green">Bean Validation</span>
+        <span class="tag green">Hibernate Envers</span>
+        <span class="tag green">Lombok</span>
+        <span class="tag green">SpringDoc OpenAPI</span>
+        <span class="tag teal">@Scheduled (Nightly Job)</span>
+        <span class="tag teal">Kafka (asset-events)</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4>🗄️ Database &amp; AI Stack</h4>
+      <div style="margin-top:8px">
+        <span class="tag orange">PostgreSQL 15</span>
+        <span class="tag orange">pgvector extension</span>
+        <span class="tag purple">RBAC (ADMIN/EMPLOYEE)</span>
+        <span class="tag purple">API Versioning v1</span>
+        <span class="tag pink">MCP (Model Context Protocol)</span>
+        <span class="tag pink">A2A (Agent-to-Agent)</span>
+        <span class="tag pink">RAG Pipeline</span>
+        <span class="tag pink">LLMOps</span>
+        <span class="tag pink">OLMPs</span>
+        <span class="tag yellow">Postman / Swagger UI</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ JWT httpOnly ══ -->
+<div class="section security-feature">
+  <h2>🔐 JWT Authentication — httpOnly Cookie + Refresh Token</h2>
+  <p>JWT is <strong>not stored in sessionStorage or localStorage</strong>. It is stored in a <strong>httpOnly cookie</strong> set by the server — JavaScript cannot read it, making it safe from XSS attacks.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>❌ Why NOT sessionStorage</h4>
+      <ul class="check" style="margin-top:8px">
+        <li>JavaScript can read sessionStorage → XSS attack steals token</li>
+        <li>Must manually attach token in every Axios request header</li>
+        <li>Tab close = token gone = user must re-login</li>
+        <li>No refresh token support → short-lived = bad UX</li>
+        <li>Attacker injects script → reads token → full account takeover</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>✅ Why httpOnly Cookie</h4>
+      <ul class="check" style="margin-top:8px">
+        <li>JavaScript <strong>cannot read</strong> httpOnly cookies — XSS safe</li>
+        <li>Browser sends cookie automatically on every request</li>
+        <li>No manual token attachment needed in Axios</li>
+        <li>Refresh token in separate httpOnly cookie — silent re-auth</li>
+        <li><code>SameSite=Strict</code> prevents CSRF attacks</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Login Flow — httpOnly Cookie</h3>
+  <div class="flow">
+    <div class="flow-box secure">👤 User Login</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">POST /api/v1/auth/login</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Spring Boot validates credentials</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Set-Cookie: access_token (httpOnly, 15min)</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Set-Cookie: refresh_token (httpOnly, 7days)</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Redux authSlice updated (user info only)</div>
+  </div>
+
+  <h3>API Request Flow</h3>
+  <div class="flow">
+    <div class="flow-box secure">API Request</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Browser auto-sends httpOnly cookie</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">JwtAuthFilter reads cookie (not header)</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">RBAC check (@PreAuthorize)</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Service → Repository → DB</div>
+  </div>
+
+  <h3>Refresh Token Flow (Silent Re-auth)</h3>
+  <div class="flow">
+    <div class="flow-box secure">Access token expires (15min)</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">API returns 401</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Axios interceptor catches 401</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">POST /api/v1/auth/refresh (sends refresh_token cookie)</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">New access_token cookie set</div><div class="flow-arrow">→</div>
+    <div class="flow-box secure">Original request retried automatically</div>
+  </div>
+
+  <h3>Spring Boot — Set httpOnly Cookie</h3>
+  <pre><span class="cm">// AuthService.java — on successful login:</span>
+<span class="cl">ResponseCookie</span> accessCookie = <span class="cl">ResponseCookie</span>.from(<span class="str">"access_token"</span>, jwtToken)
+    .httpOnly(<span class="kw">true</span>)       <span class="cm">// JS cannot read</span>
+    .secure(<span class="kw">true</span>)         <span class="cm">// HTTPS only</span>
+    .path(<span class="str">"/"</span>)
+    .maxAge(15 * 60)      <span class="cm">// 15 minutes</span>
+    .sameSite(<span class="str">"Strict"</span>)   <span class="cm">// CSRF protection</span>
+    .build();
+
+<span class="cl">ResponseCookie</span> refreshCookie = <span class="cl">ResponseCookie</span>.from(<span class="str">"refresh_token"</span>, refreshToken)
+    .httpOnly(<span class="kw">true</span>)
+    .secure(<span class="kw">true</span>)
+    .path(<span class="str">"/api/v1/auth/refresh"</span>)  <span class="cm">// only sent to refresh endpoint</span>
+    .maxAge(7 * 24 * 60 * 60)       <span class="cm">// 7 days</span>
+    .sameSite(<span class="str">"Strict"</span>)
+    .build();
+
+response.addHeader(<span class="cl">HttpHeaders</span>.SET_COOKIE, accessCookie.toString());
+response.addHeader(<span class="cl">HttpHeaders</span>.SET_COOKIE, refreshCookie.toString());</pre>
+
+  <h3>Frontend — Axios Config (no manual token needed)</h3>
+  <pre><span class="cm">// axiosInstance.js</span>
+<span class="kw">const</span> api = axios.create({
+  baseURL: <span class="str">'/api/v1'</span>,
+  withCredentials: <span class="kw">true</span>,   <span class="cm">// browser auto-sends httpOnly cookie</span>
+});
+
+<span class="cm">// Response interceptor — silent token refresh on 401</span>
+api.interceptors.response.use(
+  res => res,
+  <span class="kw">async</span> err => {
+    <span class="kw">if</span> (err.response?.status === 401 && !err.config._retry) {
+      err.config._retry = <span class="kw">true</span>;
+      <span class="kw">await</span> api.post(<span class="str">'/auth/refresh'</span>);  <span class="cm">// refresh_token cookie sent automatically</span>
+      <span class="kw">return</span> api(err.config);           <span class="cm">// retry original request</span>
+    }
+    <span class="kw">return</span> Promise.reject(err);
+  }
+);</pre>
+
+  <div class="security-box">
+    <h4>🔒 Security Summary</h4>
+    <ul class="check">
+      <li><strong>XSS Protection</strong> — httpOnly cookie cannot be read by any JavaScript</li>
+      <li><strong>CSRF Protection</strong> — SameSite=Strict blocks cross-site request forgery</li>
+      <li><strong>Short-lived access token</strong> — 15 minutes; limits damage if intercepted</li>
+      <li><strong>Long-lived refresh token</strong> — 7 days, path-restricted to /auth/refresh only</li>
+      <li><strong>Logout</strong> — server clears both cookies (maxAge=0)</li>
+      <li><strong>Secure flag</strong> — cookies only sent over HTTPS in production</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══ AI WORKFLOW ══ -->
+<div class="section ai-feature">
+  <h2>🤖 AI Workflow Integration — IT Asset Management</h2>
+  <p>The AI layer adds intelligence to the asset management system — natural language queries, smart search, predictive maintenance, and autonomous agents that communicate with each other and with the Spring Boot API.</p>
+
+  <!-- MCP -->
+  <div class="ai-box">
+    <h4>🔌 MCP — Model Context Protocol</h4>
+    <p style="color:#94a3b8;margin-bottom:12px">MCP is a standard protocol that lets AI models (like Claude) connect to your IT Asset Management System's tools and data sources. The AI can call your actual Spring Boot APIs as tools.</p>
+    <ul class="check">
+      <li><strong>What it does:</strong> Exposes your Spring Boot API endpoints as callable tools for an AI assistant</li>
+      <li>Admin types: <em>"Which laptops have warranty expiring this month?"</em> → AI calls <code>GET /api/v1/assets?status=ACTIVE</code> and filters by warrantyExpiry</li>
+      <li>Admin types: <em>"Assign asset #42 to John"</em> → AI calls <code>PUT /api/v1/assets/42/assign</code></li>
+      <li>AI reads audit logs, checks asset status, creates maintenance requests — all via MCP tools</li>
+    </ul>
+    <pre style="margin-top:12px"><span class="cm">// MCP Tool definitions exposed to AI</span>
+{
+  <span class="str">"tools"</span>: [
+    { <span class="str">"name"</span>: <span class="str">"search_assets"</span>,        <span class="str">"description"</span>: <span class="str">"Search IT assets by type, status, branch"</span> },
+    { <span class="str">"name"</span>: <span class="str">"get_asset_by_id"</span>,      <span class="str">"description"</span>: <span class="str">"Get full details of a specific asset"</span> },
+    { <span class="str">"name"</span>: <span class="str">"check_warranty_status"</span>, <span class="str">"description"</span>: <span class="str">"Get warranty and depreciation info"</span> },
+    { <span class="str">"name"</span>: <span class="str">"create_maintenance_request"</span>, <span class="str">"description"</span>: <span class="str">"Log asset for maintenance"</span> },
+    { <span class="str">"name"</span>: <span class="str">"get_audit_logs"</span>,        <span class="str">"description"</span>: <span class="str">"Retrieve audit history with filters"</span> }
+  ]
+}</pre>
+  </div>
+
+  <!-- A2A -->
+  <div class="ai-box">
+    <h4>🤝 A2A — Agent-to-Agent Communication</h4>
+    <p style="color:#94a3b8;margin-bottom:12px">Multiple specialized AI agents communicate with each other to handle complex tasks that no single agent can do alone. Each agent has one job.</p>
+    <div class="grid2" style="margin-top:12px">
+      <div class="card ai-card">
+        <h4>🔍 Asset Monitor Agent</h4>
+        <p>Watches asset statuses, warranty dates, depreciation. Detects anomalies — e.g., asset assigned to terminated employee still active.</p>
+        <p style="color:#c4b5fd;margin-top:8px;font-size:.85rem">→ Notifies Maintenance Agent when asset nears end-of-life</p>
+      </div>
+      <div class="card ai-card">
+        <h4>🔧 Maintenance Scheduler Agent</h4>
+        <p>Receives alerts from Monitor Agent. Checks technician availability, creates maintenance requests, sets asset status to MAINTENANCE.</p>
+        <p style="color:#c4b5fd;margin-top:8px;font-size:.85rem">→ Notifies Audit Agent after scheduling</p>
+      </div>
+      <div class="card ai-card">
+        <h4>📋 Audit &amp; Compliance Agent</h4>
+        <p>Listens to all agent actions. Writes structured audit log entries. Flags compliance violations (unassigned assets, expired warranties in use).</p>
+        <p style="color:#c4b5fd;margin-top:8px;font-size:.85rem">→ Reports to Admin Dashboard Agent</p>
+      </div>
+      <div class="card ai-card">
+        <h4>📊 Admin Report Agent</h4>
+        <p>Receives summaries from all agents. Generates weekly finance/lifecycle reports. Answers natural language queries about the asset fleet.</p>
+        <p style="color:#c4b5fd;margin-top:8px;font-size:.85rem">→ Delivers via ChatWidget to Admin</p>
+      </div>
+    </div>
+    <div class="flow" style="margin-top:16px">
+      <div class="flow-box ai">Asset Monitor Agent</div><div class="flow-arrow">→</div>
+      <div class="flow-box ai">Detects expiring warranty</div><div class="flow-arrow">→</div>
+      <div class="flow-box ai">Notifies Maintenance Agent (A2A)</div><div class="flow-arrow">→</div>
+      <div class="flow-box ai">Scheduler creates request via MCP</div><div class="flow-arrow">→</div>
+      <div class="flow-box ai">Audit Agent logs action</div><div class="flow-arrow">→</div>
+      <div class="flow-box ai">Admin notified via ChatWidget</div>
+    </div>
+  </div>
+
+  <!-- RAG -->
+  <div class="ai-box">
+    <h4>📚 RAG — Retrieval Augmented Generation</h4>
+    <p style="color:#94a3b8;margin-bottom:12px">RAG combines a vector database with an LLM. Instead of the AI guessing answers, it first retrieves relevant documents from your system, then generates an accurate response based on that context.</p>
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <h3 style="color:#c084fc;margin-top:0">What gets stored in vector DB:</h3>
+        <ul class="check">
+          <li>Asset manuals and user guides (Dell, HP, Cisco PDFs)</li>
+          <li>Maintenance history logs per asset</li>
+          <li>Company IT policies and procurement rules</li>
+          <li>Past audit log entries (for pattern matching)</li>
+          <li>Asset specifications and purchase records</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:#c084fc;margin-top:0">Example RAG queries in IT Asset:</h3>
+        <ul class="check">
+          <li><em>"How do I factory reset a Dell XPS 15?"</em> → retrieves Dell manual chunk</li>
+          <li><em>"Which assets had similar issues last quarter?"</em> → semantic search on maintenance logs</li>
+          <li><em>"What is our policy for retiring Laptops?"</em> → retrieves IT policy document</li>
+          <li><em>"Show me assets like the ones that failed in Feb"</em> → similarity search</li>
+        </ul>
+      </div>
+    </div>
+    <pre style="margin-top:12px"><span class="cm">// RAG Pipeline for IT Asset Management</span>
+<span class="cm">// Step 1: Embed and store asset documents</span>
+<span class="kw">POST</span> /api/v1/ai/embed
+{ <span class="str">"content"</span>: <span class="str">"Dell XPS 15 manual chapter 3..."</span>, <span class="str">"assetType"</span>: <span class="str">"Laptop"</span> }
+<span class="cm">// → generates embedding vector → stored in pgvector</span>
+
+<span class="cm">// Step 2: User asks question via ChatWidget</span>
+<span class="str">"How do I reset my Dell laptop?"</span>
+<span class="cm">// → embed question → vector similarity search in pgvector</span>
+<span class="cm">// → retrieve top 3 relevant manual chunks</span>
+<span class="cm">// → send chunks + question to LLM → grounded answer returned</span></pre>
+  </div>
+
+  <!-- Vector Database -->
+  <div class="ai-box">
+    <h4>🗃️ Vector Database — pgvector (PostgreSQL Extension)</h4>
+    <p style="color:#94a3b8;margin-bottom:12px">Since your project already uses PostgreSQL, <code>pgvector</code> adds vector storage directly — no separate vector DB service needed. Stores embedding vectors for semantic search.</p>
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <h3 style="color:#c084fc;margin-top:0">Setup</h3>
+        <pre><span class="cm">-- Enable pgvector extension</span>
+<span class="kw">CREATE EXTENSION</span> vector;
+
+<span class="cm">-- Asset embeddings table</span>
+<span class="kw">CREATE TABLE</span> asset_embeddings (
+  id          <span class="kw">BIGSERIAL PRIMARY KEY</span>,
+  asset_id    <span class="kw">BIGINT REFERENCES</span> assets(id),
+  content     <span class="kw">TEXT</span>,
+  embedding   vector(1536),  <span class="cm">-- OpenAI ada-002</span>
+  source_type <span class="kw">VARCHAR</span>(50)  <span class="cm">-- MANUAL/POLICY/LOG</span>
+);
+
+<span class="cm">-- IVFFlat index for fast similarity search</span>
+<span class="kw">CREATE INDEX</span> ON asset_embeddings
+  <span class="kw">USING</span> ivfflat (embedding vector_cosine_ops)
+  <span class="kw">WITH</span> (lists = 100);</pre>
+      </div>
+      <div>
+        <h3 style="color:#c084fc;margin-top:0">Semantic Search Query</h3>
+        <pre><span class="cm">-- Find top 5 most similar documents</span>
+<span class="kw">SELECT</span> content, asset_id,
+  1 - (embedding &lt;=&gt; <span class="str">'[0.12, 0.45, ...]'</span>::vector)
+  <span class="kw">AS</span> similarity
+<span class="kw">FROM</span> asset_embeddings
+<span class="kw">ORDER BY</span> embedding &lt;=&gt;
+  <span class="str">'[0.12, 0.45, ...]'</span>::vector
+<span class="kw">LIMIT</span> 5;</pre>
+        <ul class="check" style="margin-top:12px">
+          <li>Cosine similarity search</li>
+          <li>Searches by <em>meaning</em> not keywords</li>
+          <li>Stays inside your PostgreSQL DB</li>
+          <li>No Pinecone/Weaviate needed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- LLMOps -->
+  <div class="ai-box">
+    <h4>⚙️ LLMOps — LLM Operations for IT Asset Management</h4>
+    <p style="color:#94a3b8;margin-bottom:12px">LLMOps is the practice of managing, monitoring, and maintaining LLM-powered features in production — like DevOps but for AI models. Applied to the ChatWidget AI assistant in this project.</p>
+    <div class="grid3" style="margin-top:12px">
+      <div class="card ai-card">
+        <h4>📊 Monitoring</h4>
+        <ul class="check" style="margin-top:8px">
+          <li>Track every prompt sent via ChatWidget</li>
+          <li>Log response latency per query</li>
+          <li>Monitor token usage per admin session</li>
+          <li>Alert if LLM response time exceeds 3s</li>
+          <li>Log failed/hallucinated responses</li>
+        </ul>
+      </div>
+      <div class="card ai-card">
+        <h4>🔄 Versioning &amp; Prompt Management</h4>
+        <ul class="check" style="margin-top:8px">
+          <li>System prompt versioned in database</li>
+          <li>A/B test different prompt templates</li>
+          <li>Roll back prompt if response quality drops</li>
+          <li>Track which prompt version gave best answers</li>
+          <li>Store prompt + response pairs for evaluation</li>
+        </ul>
+      </div>
+      <div class="card ai-card">
+        <h4>✅ Evaluation &amp; Quality</h4>
+        <ul class="check" style="margin-top:8px">
+          <li>Admin thumbs up/down on ChatWidget responses</li>
+          <li>Automated eval: answer relevance score</li>
+          <li>Faithfulness check — does answer match retrieved docs</li>
+          <li>Periodic re-evaluation on golden test set</li>
+          <li>Drift detection — model behavior changes over time</li>
+        </ul>
+      </div>
+    </div>
+    <pre style="margin-top:16px"><span class="cm">// LLMOps — log every AI interaction to audit table</span>
+<span class="kw">@Entity</span>
+<span class="kw">public class</span> <span class="cl">AiInteractionLog</span> {
+    <span class="kw">private</span> <span class="cl">Long</span>          id;
+    <span class="kw">private</span> <span class="cl">String</span>        userQuery;
+    <span class="kw">private</span> <span class="cl">String</span>        promptVersion;    <span class="cm">// e.g. "v2.1"</span>
+    <span class="kw">private</span> <span class="cl">String</span>        modelUsed;        <span class="cm">// e.g. "gpt-4o"</span>
+    <span class="kw">private</span> <span class="cl">Integer</span>       tokensUsed;
+    <span class="kw">private</span> <span class="cl">Long</span>          latencyMs;
+    <span class="kw">private</span> <span class="cl">String</span>        retrievedContext; <span class="cm">// RAG chunks used</span>
+    <span class="kw">private</span> <span class="cl">String</span>        aiResponse;
+    <span class="kw">private</span> <span class="cl">Integer</span>       feedbackScore;    <span class="cm">// 1=thumbs up, -1=thumbs down</span>
+    <span class="kw">private</span> <span class="cl">LocalDateTime</span> timestamp;
+    <span class="kw">private</span> <span class="cl">String</span>        performedBy;      <span class="cm">// admin username</span>
+}</pre>
+  </div>
+
+  <!-- OLMPs -->
+  <div class="ai-box">
+    <h4>🔁 OLMPs — Online Learning Model Pipelines</h4>
+    <p style="color:#94a3b8;margin-bottom:12px">OLMPs keep AI models improving continuously as new data comes in — rather than training once and freezing. Applied to the predictive maintenance and asset failure prediction features.</p>
+    <div class="grid2" style="margin-top:12px">
+      <div class="card ai-card">
+        <h4>📈 Predictive Maintenance Pipeline</h4>
+        <ul class="check" style="margin-top:8px">
+          <li>Model trained on historical maintenance logs</li>
+          <li>Predicts: which assets are likely to need maintenance in next 30 days</li>
+          <li>New maintenance records → model retrains nightly</li>
+          <li>Spring Boot <code>@Scheduled</code> triggers pipeline at 3 AM</li>
+          <li>Model output stored in <code>asset_predictions</code> table</li>
+          <li>Lifecycle page shows "⚠ Likely maintenance soon" badge</li>
+        </ul>
+      </div>
+      <div class="card ai-card">
+        <h4>⚡ Online Learning Flow</h4>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content"><h5>New Event</h5><p>Asset marked MAINTENANCE → new training sample available</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><h5>Feature Extraction</h5><p>Age, type, purchase price, last maintenance date → feature vector</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content"><h5>Incremental Update</h5><p>Model updated with new sample without full retraining</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><h5>Prediction Refresh</h5><p>All active assets re-scored → Lifecycle page updated</p></div>
+        </div>
+      </div>
+    </div>
+    <pre style="margin-top:16px"><span class="cm">// OLMP — nightly pipeline triggered by scheduler</span>
+<span class="kw">@Scheduled</span>(cron = <span class="str">"0 0 3 * * ?"</span>)  <span class="cm">// 3:00 AM every day</span>
+<span class="kw">public void</span> runMaintenancePredictionPipeline() {
+    <span class="cm">// 1. Fetch all assets with maintenance history</span>
+    <span class="cl">List</span>&lt;<span class="cl">Asset</span>&gt; assets = assetRepository.findAll();
+
+    <span class="cm">// 2. Extract features: age, type, daysLastMaintenance, purchasePrice</span>
+    <span class="cm">// 3. Run prediction model (scikit-learn via REST or ONNX runtime)</span>
+    <span class="cm">// 4. Store results in asset_predictions table</span>
+    <span class="cm">// 5. Publish Kafka event → Lifecycle page refreshes prediction badges</span>
+    kafkaTemplate.send(<span class="str">"asset-events"</span>, <span class="str">"{\"type\":\"PREDICTIONS_UPDATED\"}"</span>);
+}</pre>
+  </div>
+
+  <!-- AI Workflow Summary -->
+  <h3>Complete AI Workflow — How All Pieces Connect</h3>
+  <div class="flow">
+    <div class="flow-box ai">Admin asks ChatWidget</div><div class="flow-arrow">→</div>
+    <div class="flow-box ai">MCP tool called (search_assets)</div><div class="flow-arrow">→</div>
+    <div class="flow-box ai">RAG retrieves relevant docs from pgvector</div><div class="flow-arrow">→</div>
+    <div class="flow-box ai">LLM generates grounded answer</div><div class="flow-arrow">→</div>
+    <div class="flow-box ai">LLMOps logs interaction</div><div class="flow-arrow">→</div>
+    <div class="flow-box ai">A2A agents act on result</div><div class="flow-arrow">→</div>
+    <div class="flow-box ai">OLMP updates prediction model</div>
+  </div>
+</div>
+
+<!-- ══ ARCHITECTURE ══ -->
+<div class="section">
+  <h2>🏗️ System Architecture</h2>
+  <svg viewBox="0 0 1100 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px;background:#0f172a;border-radius:10px;padding:10px">
+    <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#60a5fa"/></marker>
+    <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/></marker>
+    <marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#a855f7"/></marker></defs>
+    <!-- Browser -->
+    <rect x="10" y="20" width="160" height="340" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="90" y="42" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="bold">Browser</text>
+    <rect x="22" y="50" width="136" height="22" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="90" y="65" text-anchor="middle" fill="#93c5fd" font-size="9">React 18 App</text>
+    <rect x="22" y="80" width="136" height="22" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="90" y="95" text-anchor="middle" fill="#93c5fd" font-size="9">Redux Store</text>
+    <rect x="22" y="110" width="136" height="22" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="90" y="125" text-anchor="middle" fill="#93c5fd" font-size="9">React Query Cache</text>
+    <rect x="22" y="140" width="136" height="22" rx="5" fill="#0f172a" stroke="#1e40af"/>
+    <text x="90" y="155" text-anchor="middle" fill="#93c5fd" font-size="9">React Window (virt)</text>
+    <rect x="22" y="170" width="136" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="90" y="185" text-anchor="middle" fill="#86efac" font-size="9">httpOnly Cookie (JWT)</text>
+    <rect x="22" y="200" width="136" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="90" y="215" text-anchor="middle" fill="#86efac" font-size="9">Axios (withCredentials)</text>
+    <rect x="22" y="230" width="136" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="90" y="245" text-anchor="middle" fill="#86efac" font-size="9">React.lazy + Suspense</text>
+    <rect x="22" y="260" width="136" height="22" rx="5" fill="#0f172a" stroke="#0f766e"/>
+    <text x="90" y="275" text-anchor="middle" fill="#5eead4" font-size="9">ChatWidget (AI / MCP)</text>
+    <rect x="22" y="290" width="136" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="90" y="305" text-anchor="middle" fill="#c4b5fd" font-size="9">RAG responses</text>
+    <rect x="22" y="320" width="136" height="30" rx="5" fill="#0f172a" stroke="#0f766e"/>
+    <text x="90" y="337" text-anchor="middle" fill="#5eead4" font-size="9">Vite: JS + CSS bundles</text>
+    <!-- Arrow browser→spring -->
+    <path d="M 175 180 L 215 180" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr)"/>
+    <path d="M 215 180 L 175 180" stroke="#60a5fa" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+    <text x="195" y="172" text-anchor="middle" fill="#64748b" font-size="8">HTTPS + Cookie</text>
+    <!-- Spring Boot -->
+    <rect x="220" y="20" width="195" height="340" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="318" y="42" text-anchor="middle" fill="#34d399" font-size="12" font-weight="bold">Spring Boot</text>
+    <rect x="232" y="50" width="170" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="317" y="65" text-anchor="middle" fill="#86efac" font-size="9">Security Filter Chain</text>
+    <rect x="232" y="80" width="170" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="317" y="95" text-anchor="middle" fill="#86efac" font-size="9">JwtAuthFilter (reads cookie)</text>
+    <rect x="232" y="110" width="170" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="317" y="125" text-anchor="middle" fill="#86efac" font-size="9">RBAC @PreAuthorize</text>
+    <rect x="232" y="140" width="170" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="317" y="155" text-anchor="middle" fill="#86efac" font-size="9">API v1 Controllers</text>
+    <rect x="232" y="170" width="170" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="317" y="185" text-anchor="middle" fill="#86efac" font-size="9">Services (Business Logic)</text>
+    <rect x="232" y="200" width="170" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="317" y="215" text-anchor="middle" fill="#86efac" font-size="9">JPA Repositories</text>
+    <rect x="232" y="230" width="170" height="22" rx="5" fill="#0f172a" stroke="#14532d"/>
+    <text x="317" y="245" text-anchor="middle" fill="#86efac" font-size="9">Audit Log Service</text>
+    <rect x="232" y="260" width="170" height="22" rx="5" fill="#0f172a" stroke="#0f766e"/>
+    <text x="317" y="275" text-anchor="middle" fill="#5eead4" font-size="9">@Scheduled 2AM + Sunday 8AM</text>
+    <rect x="232" y="290" width="170" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="317" y="305" text-anchor="middle" fill="#c4b5fd" font-size="9">MCP Tool Handler</text>
+    <rect x="232" y="320" width="170" height="30" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="317" y="333" text-anchor="middle" fill="#c4b5fd" font-size="9">RAG / AI Interaction Service</text>
+    <text x="317" y="346" text-anchor="middle" fill="#c4b5fd" font-size="9">LLMOps Logging</text>
+    <!-- Arrow spring→postgres -->
+    <path d="M 420 180 L 455 180" stroke="#f59e0b" stroke-width="2" marker-end="url(#arr2)"/>
+    <path d="M 455 180 L 420 180" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+    <text x="438" y="172" text-anchor="middle" fill="#64748b" font-size="8">JDBC</text>
+    <!-- PostgreSQL -->
+    <rect x="460" y="20" width="175" height="340" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+    <text x="548" y="42" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="bold">PostgreSQL</text>
+    <rect x="473" y="50" width="148" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="547" y="65" text-anchor="middle" fill="#fcd34d" font-size="9">users (active field)</text>
+    <rect x="473" y="80" width="148" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="547" y="95" text-anchor="middle" fill="#fcd34d" font-size="9">assets (warrantyExpiry, price)</text>
+    <rect x="473" y="110" width="148" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="547" y="125" text-anchor="middle" fill="#fcd34d" font-size="9">asset_requests</text>
+    <rect x="473" y="140" width="148" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="547" y="155" text-anchor="middle" fill="#fcd34d" font-size="9">branches</text>
+    <rect x="473" y="170" width="148" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="547" y="185" text-anchor="middle" fill="#fcd34d" font-size="9">audit_logs (SCHEDULER)</text>
+    <rect x="473" y="200" width="148" height="22" rx="5" fill="#0f172a" stroke="#78350f"/>
+    <text x="547" y="215" text-anchor="middle" fill="#fcd34d" font-size="9">refresh_tokens</text>
+    <rect x="473" y="230" width="148" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="547" y="245" text-anchor="middle" fill="#c4b5fd" font-size="9">asset_embeddings (pgvector)</text>
+    <rect x="473" y="260" width="148" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="547" y="275" text-anchor="middle" fill="#c4b5fd" font-size="9">ai_interaction_logs</text>
+    <rect x="473" y="290" width="148" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="547" y="305" text-anchor="middle" fill="#c4b5fd" font-size="9">asset_predictions (OLMP)</text>
+    <rect x="473" y="320" width="148" height="30" rx="5" fill="#0f172a" stroke="#0f766e"/>
+    <text x="547" y="333" text-anchor="middle" fill="#5eead4" font-size="9">idx_assets_fts (GIN)</text>
+    <text x="547" y="346" text-anchor="middle" fill="#5eead4" font-size="9">ivfflat (vector cosine)</text>
+    <!-- AI Agents box -->
+    <rect x="670" y="20" width="180" height="200" rx="10" fill="#1e293b" stroke="#4c1d95" stroke-width="1.5"/>
+    <text x="760" y="42" text-anchor="middle" fill="#a855f7" font-size="12" font-weight="bold">AI Agents (A2A)</text>
+    <rect x="682" y="52" width="155" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="760" y="67" text-anchor="middle" fill="#c4b5fd" font-size="9">🔍 Asset Monitor Agent</text>
+    <rect x="682" y="82" width="155" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="760" y="97" text-anchor="middle" fill="#c4b5fd" font-size="9">🔧 Maintenance Agent</text>
+    <rect x="682" y="112" width="155" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="760" y="127" text-anchor="middle" fill="#c4b5fd" font-size="9">📋 Audit &amp; Compliance Agent</text>
+    <rect x="682" y="142" width="155" height="22" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="760" y="157" text-anchor="middle" fill="#c4b5fd" font-size="9">📊 Admin Report Agent</text>
+    <rect x="682" y="172" width="155" height="40" rx="5" fill="#0f172a" stroke="#0f766e"/>
+    <text x="760" y="190" text-anchor="middle" fill="#5eead4" font-size="9">MCP ← calls Spring Boot APIs</text>
+    <text x="760" y="206" text-anchor="middle" fill="#5eead4" font-size="9">RAG ← queries pgvector</text>
+    <!-- Kafka box -->
+    <rect x="670" y="235" width="180" height="125" rx="10" fill="#1e293b" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="760" y="257" text-anchor="middle" fill="#5eead4" font-size="12" font-weight="bold">Kafka</text>
+    <rect x="682" y="265" width="155" height="22" rx="5" fill="#0f172a" stroke="#0f766e"/>
+    <text x="760" y="280" text-anchor="middle" fill="#5eead4" font-size="9">topic: asset-events</text>
+    <rect x="682" y="295" width="155" height="22" rx="5" fill="#0f172a" stroke="#0f766e"/>
+    <text x="760" y="310" text-anchor="middle" fill="#5eead4" font-size="9">ASSET_RELEASED event</text>
+    <rect x="682" y="325" width="155" height="25" rx="5" fill="#0f172a" stroke="#4c1d95"/>
+    <text x="760" y="341" text-anchor="middle" fill="#c4b5fd" font-size="9">PREDICTIONS_UPDATED event</text>
+    <!-- Arrows to AI -->
+    <path d="M 640 120 L 668 120" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arr3)"/>
+    <path d="M 640 290 L 668 290" stroke="#5eead4" stroke-width="1.5" marker-end="url(#arr)"/>
+  </svg>
+</div>
+
+<!-- ══ PROJECT STRUCTURE ══ -->
+<div class="section">
+  <h2>📁 Project Structure</h2>
+  <div class="grid2">
+    <div>
+      <h3>Backend (Spring Boot)</h3>
+      <pre>
+it-asset-management/
+├── src/main/java/com/company/itasset/
+│   ├── ItAssetApplication.java  <span class="cm">← @EnableScheduling</span>
+│   ├── config/
+│   │   ├── SecurityConfig.java  <span class="cm">← httpOnly cookie config</span>
+│   │   ├── JpaAuditingConfig.java
+│   │   ├── ModelMapperConfig.java
+│   │   └── SwaggerConfig.java   <span class="cm">← JWT Bearer scheme</span>
+│   ├── security/
+│   │   ├── JwtTokenProvider.java
+│   │   ├── JwtAuthenticationFilter.java <span class="cm">← reads cookie</span>
+│   │   └── UserDetailsServiceImpl.java
+│   ├── entity/
+│   │   ├── User.java
+│   │   ├── Asset.java
+│   │   ├── AssetRequest.java
+│   │   ├── Branch.java
+│   │   ├── AuditLog.java        <span class="cm">← SCHEDULED_UNASSIGN</span>
+│   │   ├── RefreshToken.java    <span class="cm">← NEW</span>
+│   │   ├── AssetEmbedding.java  <span class="cm">← pgvector</span>
+│   │   ├── AiInteractionLog.java <span class="cm">← LLMOps</span>
+│   │   ├── AssetPrediction.java <span class="cm">← OLMP</span>
+│   │   └── enums/
+│   ├── repository/
+│   │   ├── UserRepository.java  <span class="cm">← findByActiveFalse()</span>
+│   │   ├── AssetRepository.java <span class="cm">← warranty queries</span>
+│   │   ├── RefreshTokenRepository.java
+│   │   └── AssetEmbeddingRepository.java
+│   ├── service/
+│   │   ├── AuthService.java     <span class="cm">← sets httpOnly cookies</span>
+│   │   ├── RefreshTokenService.java
+│   │   ├── AssetService.java
+│   │   ├── AuditLogService.java
+│   │   ├── AssetSchedulerService.java <span class="cm">← 2AM + 3AM + Sunday</span>
+│   │   ├── RagService.java      <span class="cm">← RAG pipeline</span>
+│   │   ├── McpToolService.java  <span class="cm">← MCP handlers</span>
+│   │   └── LlmOpsService.java   <span class="cm">← logging + eval</span>
+│   ├── controller/v1/
+│   │   ├── AuthController.java  <span class="cm">← /auth/refresh endpoint</span>
+│   │   ├── AssetController.java
+│   │   ├── AiController.java    <span class="cm">← /ai/chat, /ai/embed</span>
+│   │   └── AdminController.java
+│   └── exception/
+└── src/main/resources/
+    └── application.yml</pre>
+    </div>
+    <div>
+      <h3>Frontend (React + Vite)</h3>
+      <pre>
+frontend/
+├── src/
+│   ├── api/
+│   │   ├── axiosInstance.js   <span class="cm">← withCredentials, 401 refresh</span>
+│   │   ├── assetApi.js
+│   │   ├── adminApi.js        <span class="cm">← getAuditLogs(params)</span>
+│   │   └── aiApi.js           <span class="cm">← chat, embed endpoints</span>
+│   ├── store/
+│   │   ├── authSlice.js       <span class="cm">← user info only (no token)</span>
+│   │   └── notificationSlice.js
+│   ├── hooks/
+│   │   ├── useAuth.js
+│   │   ├── useDebounce.js
+│   │   └── useServerEvents.js <span class="cm">← Kafka SSE consumer</span>
+│   ├── pages/
+│   │   ├── Login.jsx + .css
+│   │   ├── Dashboard.jsx + .css
+│   │   ├── AssetList.jsx + .css
+│   │   ├── RequestForm.jsx + .css
+│   │   ├── MyRequests.jsx + .css
+│   │   ├── AdminDashboard.jsx + .css
+│   │   ├── BranchManagement.jsx + .css
+│   │   ├── UserManagement.jsx + .css
+│   │   ├── AuditLogs.jsx + .css   <span class="sc">← full implementation</span>
+│   │   └── AssetLifecycle.jsx + .css <span class="sc">← NEW</span>
+│   ├── components/
+│   │   ├── Navbar.jsx         <span class="cm">← no react-bootstrap</span>
+│   │   ├── AssetCard.jsx + .css
+│   │   ├── LoadingSkeleton.jsx + .css
+│   │   ├── NotificationBanner.jsx + .css
+│   │   └── ChatWidget.jsx + .css  <span class="cm">← AI / RAG responses</span>
+│   ├── App.jsx                <span class="cm">← all routes + lazy loading</span>
+│   └── main.jsx
+└── vite.config.js</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══ API ENDPOINTS ══ -->
+<div class="section">
+  <h2>🔗 API Endpoints (v1)</h2>
+  <table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/auth/login</code></td><td>Public</td><td>Login — sets httpOnly access_token + refresh_token cookies</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/auth/refresh</code></td><td>Public</td><td>Silent refresh — reads refresh_token cookie, issues new access_token</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/auth/logout</code></td><td>AUTH</td><td>Clears both cookies (maxAge=0), invalidates refresh token in DB</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/auth/register</code></td><td>ADMIN</td><td>Register new user</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/assets</code></td><td>ALL</td><td>Get assets (paginated, filterable — status=RETIRED/MAINTENANCE)</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/assets/{id}</code></td><td>ALL</td><td>Get single asset</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/assets</code></td><td>ADMIN</td><td>Create asset</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/assets/{id}</code></td><td>ADMIN</td><td>Update asset</td></tr>
+      <tr><td><span class="tag red">DELETE</span></td><td><code>/api/v1/assets/{id}</code></td><td>ADMIN</td><td>Delete asset</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/assets/{id}/assign</code></td><td>ADMIN</td><td>Assign asset to user</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/requests</code></td><td>ADMIN=all / EMP=own</td><td>List requests</td></tr>
+      <tr><td><span class="tag green">POST</span></td><td><code>/api/v1/requests</code></td><td>EMPLOYEE</td><td>Submit asset request</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/requests/{id}/approve</code></td><td>ADMIN</td><td>Approve request</td></tr>
+      <tr><td><span class="tag yellow">PUT</span></td><td><code>/api/v1/requests/{id}/reject</code></td><td>ADMIN</td><td>Reject request</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/branches</code></td><td>ALL</td><td>List branches</td></tr>
+      <tr><td><span class="tag blue">GET</span></td><td><code>/api/v1/admin/users</code></td><td>ADMIN</td><td>List all users</td></tr>
+      <tr class="new-row"><td><span class="tag blue">GET</span></td><td><code>/api/v1/admin/audit-logs</code></td><td>ADMIN</td><td>Paginated audit trail — search, action filter, date range</td></tr>
+      <tr class="new-row"><td><span class="tag blue">GET</span></td><td><code>/api/v1/admin/stats</code></td><td>ADMIN</td><td>Dashboard statistics</td></tr>
+      <tr class="new-row"><td><span class="tag blue">GET</span></td><td><code>/api/v1/manager/requests</code></td><td>MANAGER / ADMIN</td><td>Team requests — only direct reports of the logged-in manager</td></tr>
+      <tr class="new-row"><td><span class="tag blue">GET</span></td><td><code>/api/v1/manager/team-assets</code></td><td>MANAGER / ADMIN</td><td>Assets assigned to team members</td></tr>
+      <tr class="new-row"><td><span class="tag blue">GET</span></td><td><code>/api/v1/manager/stats</code></td><td>MANAGER / ADMIN</td><td>Team stats: members, assigned assets, pending approvals, approved this month</td></tr>
+      <tr class="ai-row"><td><span class="tag green">POST</span></td><td><code>/api/v1/ai/chat</code></td><td>ADMIN</td><td>ChatWidget — RAG + MCP powered AI response</td></tr>
+      <tr class="ai-row"><td><span class="tag green">POST</span></td><td><code>/api/v1/ai/embed</code></td><td>ADMIN</td><td>Embed document into pgvector for RAG</td></tr>
+      <tr class="ai-row"><td><span class="tag blue">GET</span></td><td><code>/api/v1/ai/predictions</code></td><td>ADMIN</td><td>Get OLMP maintenance predictions for Lifecycle page</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ ROLE ACCESS ══ -->
+<div class="section">
+  <h2>🔐 Role-Based Access Control</h2>
+
+  <!-- Role comparison table -->
+  <div style="overflow-x:auto;margin-bottom:24px">
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th style="text-align:center">👤 EMPLOYEE</th>
+          <th style="text-align:center">👥 MANAGER</th>
+          <th style="text-align:center">🔑 ADMIN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>View asset catalog</td>        <td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>Submit asset request</td>       <td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>View own requests</td>          <td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>Dashboard — own stats</td>      <td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>View team's requests</td>       <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓ own team</td><td style="text-align:center;color:#34d399">✓ all</td></tr>
+        <tr><td>View team's assets</td>         <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓ own team</td><td style="text-align:center;color:#34d399">✓ all</td></tr>
+        <tr><td>Approve / Reject requests</td>  <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓ own team only</td><td style="text-align:center;color:#34d399">✓ all</td></tr>
+        <tr><td>Dashboard — team stats widget</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓</td><td style="text-align:center;color:#475569">—</td></tr>
+        <tr><td>Create / Delete assets</td>     <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>Assign assets to users</td>     <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>User management</td>            <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>Audit logs</td>                 <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>Lifecycle &amp; Finance page</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓</td></tr>
+        <tr><td>AI ChatWidget (MCP + RAG)</td>  <td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#475569">—</td><td style="text-align:center;color:#34d399">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <h4>👤 EMPLOYEE</h4>
+      <ul class="check" style="margin-top:10px">
+        <li>View asset catalog + filter by type/status/branch</li>
+        <li>Submit asset requests with form validation</li>
+        <li>Track own request status</li>
+        <li>Dashboard shows own assigned assets</li>
+        <li>Cannot see other users' data</li>
+        <li>Cannot create/edit/delete assets</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:#0ea5e9">
+      <h4>👥 MANAGER <span style="font-size:.75rem;color:#38bdf8;font-weight:400">— new role</span></h4>
+      <ul class="check" style="margin-top:10px">
+        <li>Everything EMPLOYEE can do</li>
+        <li>See team requests (direct reports only)</li>
+        <li>Approve / Reject team requests with notes</li>
+        <li>View assets assigned to team members</li>
+        <li>Dashboard: team stats widget (pending approvals, assigned assets)</li>
+        <li>Linked to employees via <code>managerId</code> FK on User</li>
+        <li>Cannot touch assets outside their team</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🔑 ADMIN</h4>
+      <ul class="check" style="margin-top:10px">
+        <li>Full CRUD on all assets</li>
+        <li>Assign/unassign assets to any user</li>
+        <li>View &amp; approve ALL requests (all teams)</li>
+        <li>Manage users, branches, roles</li>
+        <li>Full audit log trail + scheduler entries</li>
+        <li>Lifecycle &amp; Finance page</li>
+        <li>AI ChatWidget (MCP + RAG + LLMOps)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MANAGER ROLE ══ -->
+<div class="section new-feature">
+  <h2>👥 MANAGER Role — Implementation Details</h2>
+  <p>Manager is a middle tier between EMPLOYEE and ADMIN. A manager can only see and act on data belonging to their direct reports, enforced at the service layer.</p>
+
+  <div class="grid2">
+    <div>
+      <h3>How Team Membership Works</h3>
+      <div class="security-box" style="margin-top:8px">
+        <h4>Option used: managerId FK on User</h4>
+        <ul class="check">
+          <li>Each <code>User</code> has a nullable <code>manager_id</code> column (FK → users.id)</li>
+          <li>Manager sees all users where <code>manager_id = manager.id</code></li>
+          <li>One manager can have multiple employees across branches</li>
+          <li>Employees without a manager_id have no manager (e.g. CEO, ADMIN)</li>
+        </ul>
+      </div>
+      <pre style="margin-top:12px"><span class="cm">-- Database</span>
+<span class="kw">ALTER TABLE</span> users <span class="kw">ADD COLUMN</span> manager_id <span class="kw">BIGINT REFERENCES</span> users(id);
+<span class="kw">CREATE INDEX</span> idx_users_manager_id <span class="kw">ON</span> users(manager_id);
+
+<span class="cm">-- Assign employees to manager (id=5)</span>
+<span class="kw">UPDATE</span> users <span class="kw">SET</span> manager_id = 5 <span class="kw">WHERE</span> id <span class="kw">IN</span> (2, 3, 4);</pre>
+    </div>
+    <div>
+      <h3>Security Guard in ManagerService</h3>
+      <pre style="margin-top:8px"><span class="cm">// Before approve/reject — verify ownership</span>
+<span class="kw">private void</span> assertOwnsRequest(<span class="cl">User</span> manager, <span class="cl">AssetRequest</span> request) {
+    <span class="kw">boolean</span> isTeamMember = getTeamMembers(manager)
+        .stream()
+        .anyMatch(u -> u.getId()
+            .equals(request.getUser().getId()));
+    <span class="kw">if</span> (!isTeamMember) {
+        <span class="kw">throw new</span> <span class="cl">UnauthorizedException</span>(
+            <span class="str">"Not your team member"</span>);
+    }
+}
+
+<span class="cm">// UserRepository — find direct reports</span>
+<span class="cl">List</span>&lt;<span class="cl">User</span>&gt; findByManagerId(<span class="cl">Long</span> managerId);</pre>
+      <ul class="check" style="margin-top:12px">
+        <li>Manager cannot approve requests from other teams — 403 thrown</li>
+        <li>Every approval/rejection writes an audit log: <code>performedBy=manager_email</code></li>
+        <li>Admin bypasses team check — full access always</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Frontend Files for MANAGER</h3>
+  <div class="grid2" style="margin-top:8px">
+    <div class="card">
+      <h4>Pages</h4>
+      <ul class="check" style="margin-top:8px">
+        <li><code>ManagerRequests.jsx</code> — paginated team requests, approve/reject modal with notes, pending rows highlighted yellow</li>
+        <li><code>ManagerTeamAssets.jsx</code> — read-only table of assets assigned to team members</li>
+        <li><code>Dashboard.jsx</code> — shows team stats widget (Total Members, Assets Assigned, Pending Approvals, Approved This Month) when role=MANAGER</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Hooks, Routes, Navbar</h4>
+      <ul class="check" style="margin-top:8px">
+        <li><code>useAuth.js</code> — exports <code>isManager</code> boolean</li>
+        <li><code>App.jsx</code> — <code>ProtectedRoute</code> accepts <code>requireManager</code> prop; ADMIN also passes the guard</li>
+        <li><code>Navbar.jsx</code> — "👥 My Team" dropdown with Team Requests + Team Assets links (visible only to MANAGER)</li>
+        <li><code>requestApi.js</code> — <code>managerApi</code> object with <code>getTeamRequests</code>, <code>getTeamAssets</code>, <code>getTeamStats</code></li>
+        <li><code>queryKeys.js</code> — <code>queryKeys.manager.*</code> keys added</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Manager Request Approval Flow</h3>
+  <div class="flow">
+    <div class="flow-box">Employee submits request</div><div class="flow-arrow">→</div>
+    <div class="flow-box">Status = PENDING</div><div class="flow-arrow">→</div>
+    <div class="flow-box">Manager sees it in Team Requests page</div><div class="flow-arrow">→</div>
+    <div class="flow-box">Clicks ✅ Approve / ❌ Reject + notes modal</div><div class="flow-arrow">→</div>
+    <div class="flow-box">PUT /requests/{id}/approve (MANAGER role)</div><div class="flow-arrow">→</div>
+    <div class="flow-box">ManagerService asserts team ownership</div><div class="flow-arrow">→</div>
+    <div class="flow-box">Audit log: APPROVE, performedBy=manager</div>
+  </div>
+</div>
+
+<!-- ══ NIGHTLY SCHEDULER ══ -->
+<div class="section new-feature">
+  <h2>⏰ Spring Boot Schedulers</h2>
+  <div class="grid3">
+    <div class="card">
+      <h4>🌙 2:00 AM — Asset Release</h4>
+      <p><code>0 0 2 * * ?</code></p>
+      <ul class="check" style="margin-top:8px">
+        <li>Finds deactivated users (<code>active=false</code>)</li>
+        <li>Releases assigned assets → AVAILABLE</li>
+        <li>Writes SCHEDULED_UNASSIGN audit log per asset</li>
+        <li>Publishes ASSET_RELEASED Kafka event → SSE push</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🔍 3:00 AM — OLMP Pipeline</h4>
+      <p><code>0 0 3 * * ?</code></p>
+      <ul class="check" style="margin-top:8px">
+        <li>Fetches all assets with maintenance history</li>
+        <li>Extracts features: age, type, last maintenance</li>
+        <li>Runs prediction model (ONNX / scikit-learn)</li>
+        <li>Stores results in asset_predictions table</li>
+        <li>Publishes PREDICTIONS_UPDATED Kafka event</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>📅 Sunday 8:00 AM — Warranty Check</h4>
+      <p><code>0 0 8 * * SUN</code></p>
+      <ul class="check" style="margin-top:8px">
+        <li>Finds assets with warranty expiring in 90 days</li>
+        <li>Finds assets with already-expired warranty in service</li>
+        <li>Writes WARRANTY_CHECK audit log summary</li>
+        <li>Publishes WARRANTY_REPORT Kafka event</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DATABASE ══ -->
+<div class="section">
+  <h2>🗄️ Database Design</h2>
+  <pre><span class="cm">-- pgvector extension for RAG + semantic search</span>
+<span class="kw">CREATE EXTENSION</span> vector;
+
+<span class="cm">-- Asset embeddings (RAG vector store)</span>
+<span class="kw">CREATE TABLE</span> asset_embeddings (
+  id          <span class="kw">BIGSERIAL PRIMARY KEY</span>,
+  asset_id    <span class="kw">BIGINT REFERENCES</span> assets(id),
+  content     <span class="kw">TEXT</span>,
+  embedding   vector(1536),
+  source_type <span class="kw">VARCHAR</span>(50)   <span class="cm">-- MANUAL / POLICY / LOG</span>
+);
+<span class="kw">CREATE INDEX</span> ON asset_embeddings <span class="kw">USING</span> ivfflat (embedding vector_cosine_ops) <span class="kw">WITH</span> (lists = 100);
+
+<span class="cm">-- Refresh token store</span>
+<span class="kw">CREATE TABLE</span> refresh_tokens (
+  id          <span class="kw">BIGSERIAL PRIMARY KEY</span>,
+  user_id     <span class="kw">BIGINT REFERENCES</span> users(id),
+  token       <span class="kw">TEXT UNIQUE NOT NULL</span>,
+  expiry      <span class="kw">TIMESTAMP NOT NULL</span>,
+  revoked     <span class="kw">BOOLEAN DEFAULT FALSE</span>
+);
+
+<span class="cm">-- OLMP predictions</span>
+<span class="kw">CREATE TABLE</span> asset_predictions (
+  id                   <span class="kw">BIGSERIAL PRIMARY KEY</span>,
+  asset_id             <span class="kw">BIGINT REFERENCES</span> assets(id),
+  maintenance_score    <span class="kw">FLOAT</span>,   <span class="cm">-- 0.0 to 1.0</span>
+  predicted_at         <span class="kw">TIMESTAMP</span>,
+  model_version        <span class="kw">VARCHAR</span>(20)
+);
+
+<span class="cm">-- Performance indexes</span>
+<span class="kw">CREATE INDEX</span> idx_assets_status       <span class="kw">ON</span> assets(status);
+<span class="kw">CREATE INDEX</span> idx_assets_warranty      <span class="kw">ON</span> assets(warranty_expiry);
+<span class="kw">CREATE INDEX</span> idx_users_active         <span class="kw">ON</span> users(active);
+<span class="kw">CREATE INDEX</span> idx_audit_logs_action    <span class="kw">ON</span> audit_logs(action);
+<span class="kw">CREATE INDEX</span> idx_audit_logs_timestamp <span class="kw">ON</span> audit_logs(timestamp);
+
+<span class="cm">-- Full-text search</span>
+<span class="kw">ALTER TABLE</span> assets <span class="kw">ADD COLUMN</span> fts_vector tsvector
+  <span class="kw">GENERATED ALWAYS AS</span> (to_tsvector(<span class="str">'english'</span>, coalesce(name,<span class="str">''</span>) || <span class="str">' '</span> || coalesce(description,<span class="str">''</span>))) STORED;
+<span class="kw">CREATE INDEX</span> idx_assets_fts <span class="kw">ON</span> assets <span class="kw">USING</span> gin(fts_vector);</pre>
+</div>
+
+<!-- ══ POSTMAN ══ -->
+<div class="section">
+  <h2>🧪 Postman Setup Guide</h2>
+  <div class="highlight-box">
+    <h4>Environment Variables</h4>
+    <pre>BASE_URL = http://localhost:8080</pre>
+    <p style="color:#94a3b8;margin-top:8px">No TOKEN variable needed — cookies are sent automatically by the browser/Postman cookie jar.</p>
+  </div>
+  <h3>Enable Cookie Jar in Postman</h3>
+  <pre><span class="cm">// In Postman: Settings → General → Automatically follow redirects ON</span>
+<span class="cm">// Cookies tab appears after login — Postman stores httpOnly cookies automatically</span>
+<span class="cm">// All subsequent requests send cookie automatically — no manual token copy needed</span></pre>
+
+  <h3>Test AI Chat Endpoint:</h3>
+  <pre><span class="cm">// POST {{BASE_URL}}/api/v1/ai/chat</span>
+{
+  <span class="str">"message"</span>: <span class="str">"Which laptops have warranty expiring in next 30 days?"</span>
+}
+<span class="cm">// Response: AI reads assets via MCP tool + answers using RAG context</span>
+
+pm.test(<span class="str">"AI responded"</span>, () => {
+  <span class="kw">const</span> json = pm.response.json();
+  pm.expect(json.answer).to.be.a(<span class="str">'string'</span>);
+  pm.expect(json.sources).to.be.an(<span class="str">'array'</span>); <span class="cm">// RAG chunks used</span>
+});</pre>
+</div>
+
+<!-- ══ FILE INDEX ══ -->
+<div class="section">
+  <h2>📋 File Index — What to Open</h2>
+  <table>
+    <thead><tr><th>File</th><th>What's Inside</th></tr></thead>
+    <tbody>
+      <tr><td><code>backend-security-jwt.java</code></td><td>SecurityConfig (httpOnly cookie), JwtAuthFilter (reads cookie not header), RefreshTokenService</td></tr>
+      <tr><td><code>backend-entities.java</code></td><td>User, Asset, AuditLog, RefreshToken, AssetEmbedding, AiInteractionLog, AssetPrediction</td></tr>
+      <tr><td><code>backend-services.java</code></td><td>AuthService (sets cookies), RagService, McpToolService, LlmOpsService</td></tr>
+      <tr class="new-row"><td><code>AssetSchedulerService.java</code></td><td>2AM asset release + 3AM OLMP pipeline + Sunday warranty check</td></tr>
+      <tr class="new-row"><td><code>AssetRepository_extra_methods.java</code></td><td>Repository queries + @EnableScheduling setup</td></tr>
+      <tr class="ai-row"><td><code>src/api/aiApi.js</code></td><td>Chat, embed, predictions API calls (withCredentials)</td></tr>
+      <tr class="ai-row"><td><code>src/pages/AssetLifecycle.jsx + .css</code></td><td>Finance/Retirement/Maintenance tabs + OLMP prediction badges</td></tr>
+      <tr class="new-row"><td><code>src/pages/AuditLogs.jsx + .css</code></td><td>Full audit log page — filters, pagination, SCHEDULER badge</td></tr>
+      <tr><td><code>src/components/Navbar.jsx</code></td><td>Plain Bootstrap HTML — no react-bootstrap, WCAG 2.1 compliant. Has 👥 My Team dropdown for MANAGER role</td></tr>
+      <tr><td><code>src/components/ChatWidget.jsx + .css</code></td><td>AI chat UI — sends to /ai/chat, shows RAG sources</td></tr>
+      <tr><td><code>src/api/axiosInstance.js</code></td><td>withCredentials:true, 401 interceptor for silent token refresh</td></tr>
+      <tr class="new-row"><td><code>src/pages/ManagerRequests.jsx + .css</code></td><td>Team requests page — paginated table, ✅ Approve / ❌ Reject modal with notes, pending rows highlighted yellow</td></tr>
+      <tr class="new-row"><td><code>src/pages/ManagerTeamAssets.jsx</code></td><td>Read-only table of assets assigned to manager's team members with warranty colour coding</td></tr>
+      <tr class="new-row"><td><code>src/hooks/useAuth.js</code></td><td>Now exports <code>isManager</code> boolean alongside isAdmin / isEmployee</td></tr>
+      <tr class="new-row"><td><code>src/api/requestApi.js</code></td><td><code>managerApi</code> object — getTeamRequests, getTeamAssets, getTeamStats, approve, reject</td></tr>
+      <tr class="new-row"><td><code>ManagerController.java</code></td><td>Spring Boot REST controller — /manager/requests, /manager/team-assets, /manager/stats. @PreAuthorize MANAGER or ADMIN</td></tr>
+      <tr class="new-row"><td><code>ManagerService.java</code></td><td>Business logic — team lookup via managerId FK, assertOwnsRequest() guard, approve/reject with audit log</td></tr>
+      <tr class="new-row"><td><code>Manager_Backend_Setup.java</code></td><td>Step-by-step: Role enum, User.managerId field, new repository methods, DB migration SQL, updated approve/reject controller</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Frontend Routes -->
+  <h3 style="margin-top:28px">Frontend Routes — All Roles</h3>
+  <table>
+    <thead><tr><th>Route</th><th>Component</th><th>Access</th></tr></thead>
+    <tbody>
+      <tr><td><code>/login</code></td><td>Login.jsx</td><td>Public</td></tr>
+      <tr><td><code>/dashboard</code></td><td>Dashboard.jsx — role-aware widgets</td><td>All authenticated</td></tr>
+      <tr><td><code>/assets</code></td><td>AssetList.jsx (React Window)</td><td>All authenticated</td></tr>
+      <tr><td><code>/requests/new</code></td><td>RequestForm.jsx</td><td>All authenticated</td></tr>
+      <tr><td><code>/requests</code></td><td>MyRequests.jsx</td><td>All authenticated</td></tr>
+      <tr class="new-row"><td><code>/manager/requests</code></td><td>ManagerRequests.jsx</td><td>MANAGER / ADMIN</td></tr>
+      <tr class="new-row"><td><code>/manager/assets</code></td><td>ManagerTeamAssets.jsx</td><td>MANAGER / ADMIN</td></tr>
+      <tr><td><code>/admin</code></td><td>AdminDashboard.jsx</td><td>ADMIN only</td></tr>
+      <tr><td><code>/admin/branches</code></td><td>BranchManagement.jsx</td><td>ADMIN only</td></tr>
+      <tr><td><code>/admin/users</code></td><td>UserManagement.jsx</td><td>ADMIN only</td></tr>
+      <tr><td><code>/admin/audit-logs</code></td><td>AuditLogs.jsx</td><td>ADMIN only</td></tr>
+      <tr><td><code>/admin/lifecycle</code></td><td>AssetLifecycle.jsx</td><td>ADMIN only</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+<!-- ===== PERFORMANCE OPTIMIZATION SECTION ===== -->
+<div class="section new-feature">
+  <h2>⚡ Performance Optimization — Bundle Size &amp; Re-render Analysis</h2>
+
+  <!-- BUNDLE SIZE -->
+  <h3>📦 Step 1 — Check Bundle Size (which package is too large?)</h3>
+  <p>Use <code>rollup-plugin-visualizer</code> (Vite's bundle analyzer). It generates a visual treemap showing every package and how much space it takes.</p>
+
+  <div class="new-box">
+    <h4>Install &amp; configure</h4>
+    <pre><span class="cm"># 1. Install the plugin</span>
+npm install --save-dev rollup-plugin-visualizer
+
+<span class="cm"># 2. Add to vite.config.js</span></pre>
+    <pre><span class="kw">import</span> { visualizer } <span class="kw">from</span> <span class="str">'rollup-plugin-visualizer'</span>;
+
+<span class="kw">export default</span> defineConfig({
+  plugins: [
+    react(),
+    visualizer({
+      open:     <span class="str">true</span>,       <span class="cm">// auto-opens in browser after build</span>
+      filename: <span class="str">'dist/stats.html'</span>,
+      gzipSize: <span class="str">true</span>,
+      template: <span class="str">'treemap'</span>,  <span class="cm">// treemap | sunburst | network</span>
+    }),
+  ],
+});</pre>
+    <pre><span class="cm"># 3. Run build — stats.html opens automatically</span>
+npm run build</pre>
+  </div>
+
+  <h3>🗺️ How to read the treemap</h3>
+  <div class="grid3">
+    <div class="card">
+      <h4>🔴 Large box = big package</h4>
+      <p>The bigger the rectangle the more KB it adds to your bundle. Find the biggest boxes first.</p>
+    </div>
+    <div class="card">
+      <h4>🟡 Common offenders</h4>
+      <p><code>moment.js</code> → replace with <code>date-fns</code><br/>
+      <code>lodash</code> → import only what you need<br/>
+      <code>@mui/icons</code> → import individual icons</p>
+    </div>
+    <div class="card">
+      <h4>🟢 Good fix — lazy load</h4>
+      <p>Split large pages into separate chunks so they only load when the user navigates to them.</p>
+    </div>
+  </div>
+
+  <div class="new-box">
+    <h4>Fix large bundle — React.lazy + Suspense (code splitting)</h4>
+    <pre><span class="cm">// Before — all pages load upfront (large initial bundle)</span>
+<span class="kw">import</span> AdminDashboard <span class="kw">from</span> <span class="str">'./pages/AdminDashboard'</span>;
+<span class="kw">import</span> AssetLifecycle <span class="kw">from</span> <span class="str">'./pages/AssetLifecycle'</span>;
+<span class="kw">import</span> AuditLogs      <span class="kw">from</span> <span class="str">'./pages/AuditLogs'</span>;
+
+<span class="cm">// After — each page loads only when user navigates to it</span>
+<span class="kw">const</span> AdminDashboard = React.lazy(() => <span class="kw">import</span>(<span class="str">'./pages/AdminDashboard'</span>));
+<span class="kw">const</span> AssetLifecycle = React.lazy(() => <span class="kw">import</span>(<span class="str">'./pages/AssetLifecycle'</span>));
+<span class="kw">const</span> AuditLogs      = React.lazy(() => <span class="kw">import</span>(<span class="str">'./pages/AuditLogs'</span>));
+
+<span class="cm">// Wrap routes in Suspense</span>
+&lt;<span class="cl">Suspense</span> fallback={&lt;<span class="cl">LoadingSkeleton</span>/&gt;}&gt;
+  &lt;<span class="cl">Routes</span>&gt;...&lt;/<span class="cl">Routes</span>&gt;
+&lt;/<span class="cl">Suspense</span>&gt;</pre>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>📊 Bundle size targets</h4>
+      <p>
+        <span class="tag green">✓ Under 200KB</span> Excellent<br/>
+        <span class="tag blue">✓ 200–500KB</span> Good<br/>
+        <span class="tag yellow">⚠ 500KB–1MB</span> Needs splitting<br/>
+        <span class="tag red">✗ Over 1MB</span> Too large — split immediately
+      </p>
+    </div>
+    <div class="card">
+      <h4>🔧 This project — dependencies</h4>
+      <p>
+        <span class="tag blue">react + react-dom</span>
+        <span class="tag blue">react-bootstrap</span>
+        <span class="tag purple">@reduxjs/toolkit</span>
+        <span class="tag teal">@tanstack/react-query</span>
+        <span class="tag orange">axios</span>
+        <span class="tag green">react-toastify</span>
+        <span class="tag yellow">recharts</span>
+        <span class="tag pink">react-window</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- RE-RENDER PROFILER -->
+  <h3>🔍 Step 2 — Find Components That Re-render Too Many Times</h3>
+  <p>Use <strong>React DevTools Profiler</strong> (install Chrome extension: "React Developer Tools" by Meta). Then open DevTools → click <code>&gt;&gt;</code> → Profiler.</p>
+
+  <div class="highlight-box">
+    <h4>Step-by-step Profiler workflow</h4>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h5>Open Profiler tab</h5>
+        <p>F12 → click <code>&gt;&gt;</code> at end of tab bar → select <strong>⚛ Profiler</strong></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h5>Start recording</h5>
+        <p>Click the blue circle 🔵 → interact with your app (type in search, open modal, click filter) → click circle again to stop</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h5>Switch to Ranked tab</h5>
+        <p>Click <strong>Ranked</strong> (next to Flamegraph) → shows all components sorted slowest → fastest. The component at the top is your worst performer.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h5>Click the slow component</h5>
+        <p>Right panel shows: render duration, what caused this update, and how many times it rendered. Click the bar chart arrows to check if it appears in every commit.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h5>Apply fix → record again to verify</h5>
+        <p>After fixing, re-record. Fixed components appear <strong>grey (striped)</strong> = skipped. Teal/yellow = still rendering.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>🛠️ Step 3 — Fix Re-render Issues</h3>
+
+  <div class="new-box">
+    <h4>Fix 1 — React.memo (stops re-render when props didn't change)</h4>
+    <pre><span class="cm">// Before — re-renders every time parent re-renders</span>
+<span class="kw">export default function</span> <span class="cl">AssetCard</span>({ asset, onEdit }) {
+  <span class="kw">return</span> &lt;<span class="cl">div</span>&gt;{asset.name}&lt;/<span class="cl">div</span>&gt;;
+}
+
+<span class="cm">// After — only re-renders if asset or onEdit prop changed</span>
+<span class="kw">const</span> <span class="cl">AssetCard</span> = React.memo(<span class="kw">function</span> <span class="cl">AssetCard</span>({ asset, onEdit }) {
+  <span class="kw">return</span> &lt;<span class="cl">div</span>&gt;{asset.name}&lt;/<span class="cl">div</span>&gt;;
+});
+<span class="kw">export default</span> AssetCard;
+
+<span class="cm">// Applied in this project: AssetCard.jsx ✅</span></pre>
+  </div>
+
+  <div class="new-box">
+    <h4>Fix 2 — useCallback (stops function props looking "new" every render)</h4>
+    <pre><span class="cm">// Before — new function created every render → React.memo on child won't help</span>
+<span class="kw">function</span> <span class="cl">AssetList</span>() {
+  <span class="kw">const</span> handleEdit = (asset) =&gt; setEditAsset(asset); <span class="cm">// new fn every render</span>
+  <span class="kw">return</span> assets.map(a =&gt; &lt;<span class="cl">AssetCard</span> onEdit={handleEdit} /&gt;);
+}
+
+<span class="cm">// After — same function reference, React.memo works correctly</span>
+<span class="kw">function</span> <span class="cl">AssetList</span>() {
+  <span class="kw">const</span> handleEdit = useCallback((asset) =&gt; {
+    setEditAsset(asset);
+  }, []); <span class="cm">// only recreates if dependencies change</span>
+  <span class="kw">return</span> assets.map(a =&gt; &lt;<span class="cl">AssetCard</span> onEdit={handleEdit} /&gt;);
+}</pre>
+  </div>
+
+  <div class="new-box">
+    <h4>Fix 3 — useMemo (stops heavy calculations running every render)</h4>
+    <pre><span class="cm">// Before — recalculates total value on every keystroke in search box</span>
+<span class="kw">const</span> totalValue = assets.reduce((sum, a) =&gt; sum + a.purchaseCost, 0);
+
+<span class="cm">// After — only recalculates when assets array changes</span>
+<span class="kw">const</span> totalValue = useMemo(() =&gt;
+  assets.reduce((sum, a) =&gt; sum + a.purchaseCost, 0),
+[assets]);
+
+<span class="cm">// Also used for branchUserCount map in BranchManagement.jsx ✅</span>
+<span class="kw">const</span> branchUserCount = useMemo(() =&gt; {
+  <span class="kw">const</span> map = {};
+  (usersData?.content || []).forEach(u =&gt; {
+    <span class="kw">if</span> (u.branchId) map[u.branchId] = (map[u.branchId] || 0) + 1;
+  });
+  <span class="kw">return</span> map;
+}, [usersData]);</pre>
+  </div>
+
+  <div class="new-box">
+    <h4>Fix 4 — Redux useSelector (stops new object reference causing re-render)</h4>
+    <pre><span class="cm">// Bad — returns new object every render → always re-renders</span>
+<span class="kw">const</span> { user, role } = useSelector(state =&gt; ({
+  user: state.auth.user,
+  role: state.auth.role,
+}));
+
+<span class="cm">// Good — separate selectors, only re-renders if that value changes</span>
+<span class="kw">const</span> user = useSelector(state =&gt; state.auth.user);
+<span class="kw">const</span> role = useSelector(state =&gt; state.auth.role);
+
+<span class="cm">// Best — createSelector (reselect) for computed values</span>
+<span class="kw">import</span> { createSelector } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+<span class="kw">const</span> selectActiveAssets = createSelector(
+  state =&gt; state.assets.list,
+  list =&gt; list.filter(a =&gt; a.status === <span class="str">'ACTIVE'</span>) <span class="cm">// memoized</span>
+);</pre>
+  </div>
+
+  <div class="new-box">
+    <h4>Fix 5 — Virtualization (long lists — only render visible items)</h4>
+    <pre><span class="cm">// Bad — renders ALL 1000 assets in DOM at once</span>
+assets.map(a =&gt; &lt;<span class="cl">AssetCard</span> key={a.id} asset={a} /&gt;)
+
+<span class="cm">// Good — only renders ~10 visible items at a time (react-window)</span>
+<span class="kw">import</span> { FixedSizeList } <span class="kw">from</span> <span class="str">'react-window'</span>;
+
+&lt;<span class="cl">FixedSizeList</span>
+  height={500}
+  itemCount={assets.length}
+  itemSize={80}
+&gt;
+  {({ index, style }) =&gt; (
+    &lt;<span class="cl">AssetCard</span> style={style} asset={assets[index]} /&gt;
+  )}
+&lt;/<span class="cl">FixedSizeList</span>&gt;</pre>
+  </div>
+
+  <!-- SUMMARY TABLE -->
+  <h3>📋 Quick Reference — When to use what</h3>
+  <table>
+    <thead><tr><th>Problem</th><th>Symptom in Profiler</th><th>Fix</th><th>File in this project</th></tr></thead>
+    <tbody>
+      <tr><td>Child re-renders when parent re-renders</td><td>Child appears teal in every commit</td><td><code>React.memo</code></td><td>AssetCard.jsx ✅</td></tr>
+      <tr><td>Function prop looks new every render</td><td>Memoized child still re-renders</td><td><code>useCallback</code></td><td>AssetList.jsx</td></tr>
+      <tr><td>Heavy calculation runs every render</td><td>One component consistently slow</td><td><code>useMemo</code></td><td>BranchManagement.jsx ✅</td></tr>
+      <tr><td>Redux selector returns new object</td><td>Component re-renders on unrelated state change</td><td>Separate selectors / <code>createSelector</code></td><td>All pages</td></tr>
+      <tr><td>Long list (100+ items)</td><td>Many components render, page feels slow</td><td><code>react-window</code> virtualization</td><td>AssetList.jsx</td></tr>
+      <tr><td>Large initial bundle</td><td>Page takes 5s+ to load first time</td><td><code>React.lazy</code> + code splitting</td><td>App.jsx routes</td></tr>
+      <tr><td>Large third-party package</td><td>stats.html shows huge box</td><td>Replace or tree-shake the package</td><td>vite.config.js</td></tr>
+    </tbody>
+  </table>
+
+  <div class="perf-box">
+    <h4>⏱ Performance targets for this project</h4>
+    <div class="perf-row"><span class="perf-before">Bad</span><span class="perf-after">Target</span><span class="perf-label">Metric</span></div>
+    <div class="perf-row"><span class="perf-before">&gt;16ms</span><span class="perf-after">&lt;8ms</span><span class="perf-label">Single component render time</span></div>
+    <div class="perf-row"><span class="perf-before">&gt;1MB</span><span class="perf-after">&lt;400KB</span><span class="perf-label">Initial JS bundle (gzipped)</span></div>
+    <div class="perf-row"><span class="perf-before">&gt;3s</span><span class="perf-after">&lt;1s</span><span class="perf-label">First Contentful Paint (FCP)</span></div>
+    <div class="perf-row"><span class="perf-before">All renders</span><span class="perf-after">Grey = skipped</span><span class="perf-label">AssetCard on search filter change</span></div>
+  </div>
+</div>
+<!-- ===== END PERFORMANCE SECTION ===== -->
+
+<footer>IT Asset Management System &nbsp;|&nbsp; Full Stack Architecture Guide &nbsp;|&nbsp; Updated August 2026 &nbsp;|&nbsp; React + Spring Boot + PostgreSQL + pgvector + MCP + RAG + LLMOps + MANAGER Role + Performance Optimization</footer>
+</body>
+</html>

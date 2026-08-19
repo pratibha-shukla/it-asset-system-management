@@ -1,0 +1,5 @@
+/* StatCard — dashboard statistics tile */
+.stat-card__icon {
+  font-size: 2rem;
+  opacity: 0.4;
+}

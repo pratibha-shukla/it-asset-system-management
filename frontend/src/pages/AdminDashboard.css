@@ -1,0 +1,25 @@
+/* AdminDashboard */
+/* .stat-card-icon moved to components/StatCard.css */
+
+/* detail-grid and pre-wrap moved to features/admin/RequestDetailModal.css */
+
+/* Clickable table row */
+.clickable-row { cursor: pointer; }
+
+/* Fixed table layout */
+.table-fixed { table-layout: fixed; }
+
+/* Table column widths */
+.col-id   { width: 40px; }
+.col-name { width: 180px; }
+.col-dept { width: 110px; }
+.col-qty  { width: 50px; }
+.col-pri  { width: 90px; }
+.col-date { width: 90px; }
+.col-act  { width: 160px; }
+
+/* Empty / celebration icon */
+.empty-icon-lg { font-size: 2.5rem; }
+
+/* Word break for long product names */
+.word-break { word-break: break-word; white-space: normal; }

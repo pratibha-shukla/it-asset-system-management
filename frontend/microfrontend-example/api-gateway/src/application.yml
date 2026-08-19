@@ -1,0 +1,104 @@
+# API Gateway — Spring Cloud Gateway (port 8080)
+#
+# ALL 10 microfrontends point to THIS single address: localhost:8080
+# Gateway reads the URL path and routes to the correct microservice.
+#
+# Frontend never knows about 8081, 8082, 8083 etc.
+# That is the gateway's job.
+
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+
+        # /api/v1/assets/**  → Asset Service on 8081
+        - id: asset-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/assets/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: assetCircuitBreaker
+                fallbackUri: forward:/fallback/assets
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 100   # 100 req/sec
+                redis-rate-limiter.burstCapacity: 200
+
+        # /api/v1/maintenance/** → Maintenance Service on 8082
+        - id: maintenance-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/maintenance/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: maintenanceCircuitBreaker
+                fallbackUri: forward:/fallback/maintenance
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 50
+                redis-rate-limiter.burstCapacity: 100
+
+        # /api/v1/users/** → User Service on 8083
+        - id: user-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/v1/users/**
+
+        # /api/v1/requests/** → Request Service on 8084
+        - id: request-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/v1/requests/**
+
+        # /api/v1/auth/** → Auth Service on 8085
+        - id: auth-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/v1/auth/**
+
+        # /api/v1/reports/** → Report Service on 8086
+        - id: report-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/v1/reports/**
+
+        # /api/v1/notifications/** → Notification Service on 8087
+        - id: notification-service
+          uri: http://localhost:8087
+          predicates:
+            - Path=/api/v1/notifications/**
+
+      # Global CORS — allow all microfrontends to call the gateway
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000"   # Shell App
+              - "http://localhost:5073"   # Asset MFE
+              - "http://localhost:5074"   # Maintenance MFE
+              - "http://localhost:5075"   # User MFE
+              - "http://localhost:5076"   # Request MFE
+              - "http://localhost:5077"   # Reports MFE
+            allowedMethods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
+            allowedHeaders: ["*"]
+            allowCredentials: true        # required for httpOnly cookies
+
+# Resilience4j — Circuit Breaker config
+resilience4j:
+  circuitbreaker:
+    instances:
+      assetCircuitBreaker:
+        slidingWindowSize: 10           # check last 10 requests
+        failureRateThreshold: 50        # open if 50% fail
+        waitDurationInOpenState: 30s    # wait 30s before retry
+        permittedNumberOfCallsInHalfOpenState: 3
+      maintenanceCircuitBreaker:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
