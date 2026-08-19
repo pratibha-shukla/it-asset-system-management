@@ -73,7 +73,7 @@ logging:
 
 google:
   gemini:
-    api-key: ${GOOGLE_API_KEY:AIzaSyAgFWhBrfgWzZJzKIthOjVQCDwmlZcF2Bk}
+    api-key: ${GOOGLE_API_KEY}
     model: gemini-flash-latest
 
 anthropic:
