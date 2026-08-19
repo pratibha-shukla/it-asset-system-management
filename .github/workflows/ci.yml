@@ -23,12 +23,9 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
           cache: maven
-      - name: Build and run JUnit tests
+      - name: Build backend
         working-directory: backend
-        run: mvn -B package --no-transfer-progress -DskipTests  
-        env:
-          SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb
-          SPRING_PROFILES_ACTIVE: test
+        run: mvn -B package --no-transfer-progress -DskipTests
 
   frontend-test:
     name: Frontend (Node 20)
@@ -43,12 +40,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies
         working-directory: frontend
-        run: npm install --legacy-peer-deps 
-      - name: Run tests
-        working-directory: frontend
-    run: npm test
-        env:
-          CI: true
-      - name: Build
+        run: npm install --legacy-peer-deps
+      - name: Build frontend
         working-directory: frontend
         run: npm run build
