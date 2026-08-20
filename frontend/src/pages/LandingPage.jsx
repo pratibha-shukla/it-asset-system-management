@@ -139,9 +139,9 @@ export default function LandingPage() {
         <Link to="/login" className="landing-btn landing-btn--primary landing-btn--lg">Sign In Now →</Link>
         <div className="landing-cta__accounts">
           <span>Demo accounts:</span>
-          {/* <code>admin@company.com / Admin@123</code>
+          <code>admin@company.com / Admin@123</code>
           <code>manager1@company.com / Manager1@123</code>
-          <code>employee1@company.com / Employee1@123</code> */}
+          <code>employee1@company.com / Employee1@123</code>
         </div>
       </section>
 
