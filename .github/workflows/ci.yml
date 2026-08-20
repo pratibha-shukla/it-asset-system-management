@@ -1,46 +1,29 @@
-name: CI
+name: Deploy Frontend to S3
 
 on:
   push:
-    branches: [main, develop]
-  pull_request:
     branches: [main]
-
-env:
-  JAVA_VERSION: '17'
-  NODE_VERSION: '20'
+    paths: ['frontend/**']
 
 jobs:
-
-  backend-test:
-    name: Backend (Java 17 / JUnit)
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-node@v4
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: temurin
-          cache: maven
-      - name: Build backend
-        working-directory: backend
-        run: mvn -B package --no-transfer-progress -DskipTests
-
-  frontend-test:
-    name: Frontend (Node 20)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          node-version: 20
+          cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
-      - name: Install dependencies
-        working-directory: frontend
-        run: npm install --legacy-peer-deps
-      - name: Build frontend
-        working-directory: frontend
-        run: npm run build
+      - run: cd frontend && npm install
+      - run: cd frontend && npm run lint --if-present
+      - run: cd frontend && npm test -- --watchAll=false --passWithNoTests
+      - run: cd frontend && npm run build
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - run: aws s3 sync frontend/dist/ s3://it-asset-fronted --delete
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation --distribution-id E3H7UYVECRK0M8 --paths "/*"
